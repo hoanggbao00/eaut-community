@@ -1,0 +1,258 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource eaut_db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid()) @map("_id")
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model VerificationToken {
+  id         String   @id @default(cuid()) @map("_id")
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Session {
+  id           String   @id @default(cuid()) @map("_id")
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Enum
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum RequestType {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+enum VoteType {
+  UP
+  DOWN
+}
+
+// Model
+model User {
+  id            String    @id @default(cuid()) @map("_id")
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  username String?  @unique
+  role    UserRole @default(USER)
+  isBanned Boolean @default(false)
+
+  accounts Account[]
+  sessions Session[]
+
+  createdCommunity   Community[]          @relation("CreatedBy")
+  updatedCommunity Community[] @relation("UpdatedCommunity")
+  communityModerator CommunityModerator[] @relation("ModeratorOf")
+
+  Post              Post[]
+  PostUpdated Post[] @relation("UpdatePost")
+
+  Comment           Comment[]
+  CommentVote       CommentVote[]
+  Vote              Vote[]
+  Follow            Follow[]
+
+  requestCreateCommunity RequestCommunity[] @relation("RequestUser")
+  requestUpdateBy RequestCommunity[] @relation("RequestUpdateBy")
+
+  notifier Notification[]
+  notifActor NotificationChange[]
+}
+
+model Category {
+  id        String      @id @default(cuid()) @map("_id")
+  title     String      @unique
+  Community Community[]
+}
+
+model Community {
+  id          String    @id @default(cuid()) @map("_id")
+  name        String    @unique
+  description String?
+  cover       String?
+  image       String?
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  rules       Json[]
+  creatorId          String?
+  creator            User?                @relation("CreatedBy", fields: [creatorId], references: [id], onDelete: SetNull)
+  status RequestStatus @default(PENDING)
+  communityAlert String[]
+
+  notificationUserIdAccess String[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  updateByUsername String?
+  updatedBy  User? @relation("UpdatedCommunity", fields: [updateByUsername], references: username, onDelete: SetNull, onUpdate: Cascade)
+
+  posts Post[]
+  follows          Follow[]
+  moderators CommunityModerator[] @relation("HasModerators")
+  requestTo RequestCommunity[] @relation("RequestTo")
+}
+
+model CommunityModerator {
+  id          String    @id @default(cuid()) @map("_id")
+  userId      String
+  User        User      @relation("ModeratorOf",fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  communityId String
+  Community   Community @relation("HasModerators", fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdDate DateTime @default(now())
+}
+
+model RequestCommunity {
+  id String @id @default(cuid()) @map("_id")
+  communityId String
+  community Community @relation("RequestTo", fields: [communityId], references: [id])
+  userId String 
+  type RequestType
+  newContent Json?
+  user User @relation("RequestUser",fields: [userId], references: [id], onDelete: Cascade)
+  status RequestStatus @default(PENDING)
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  updateById String?
+  updateBy User? @relation("RequestUpdateBy", fields: [updateById], references: [id], onDelete: NoAction)
+}
+
+model Follow {
+  id          String    @id @default(cuid()) @map("_id")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  communityId String
+  createdDate DateTime @default(now())
+}
+
+model Post {
+  id          String    @id @default(cuid()) @map("_id")
+  title       String
+  content     Json?
+  authorId String?
+  author   User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  communityId String
+  notificationUserIdAccess String[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  updatedByUsername   String?
+  updatedBy User? @relation("UpdatePost", fields: [updatedByUsername], references: username, onDelete: SetNull, onUpdate: Cascade)
+
+  comments     Comment[]
+  votes        Vote[]
+  deletedBy    String?
+  deletedDate  DateTime?
+}
+
+model Comment {
+  id        String   @id @default(cuid()) @map("_id")
+  text      String
+  author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorId  String?
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  replyToId String?
+  replyTo   Comment?  @relation("ReplyTo", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies   Comment[] @relation("ReplyTo")
+
+  votes CommentVote[]
+}
+model Vote {
+  id     String   @id @default(cuid()) @map("_id")
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  post   Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String
+  type   VoteType
+}
+
+model CommentVote {
+  id        String   @id @default(cuid()) @map("_id")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  comment   Comment  @relation(fields: [commentId], references: [id])
+  commentId String
+  type      VoteType
+}
+
+// NOTIFICATION SYSTEM
+model NotificationObject {
+  id        String   @id @default(cuid()) @map("_id")
+  type Int
+  entityId String
+  status Boolean
+  createdAt DateTime @default(now())
+  Notification Notification?
+
+  notiChange NotificationChange?
+}
+
+model Notification {
+  id        String   @id @default(cuid()) @map("_id")
+  notiObjectId String @unique
+  notiObject NotificationObject @relation(fields: [notiObjectId], references: [id])
+  notifierId String @unique
+  notifier User @relation(fields: [notifierId], references: [id], onDelete: Cascade)
+  status Boolean
+}
+
+model NotificationChange {
+  id        String   @id @default(cuid()) @map("_id")
+  notiObjectId String @unique
+  notiObject NotificationObject @relation(fields: [notiObjectId], references: [id])
+  actorId String @unique
+  actor User @relation(fields: [actorId], references: [id], onDelete: Cascade)
+}
