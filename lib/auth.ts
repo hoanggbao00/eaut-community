@@ -6,6 +6,7 @@ import { nanoid } from 'nanoid';
 import prisma from './db/prisma';
 
 export const authOptions: NextAuthOptions = {
+	secret: process.env.NEXT_PUBLIC_NEXTAUTH_SECRET,
 	session: {
 		strategy: 'jwt',
 	},
