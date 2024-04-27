@@ -1,4 +1,4 @@
-import BackRoute from "@/components/back-route";
+import BackRoute from "@/components/shared/back-route";
 import CreateForm from "@/components/c/create/community-create-form";
 import { getAuthSession } from "@/lib/auth";
 import prisma from "@/lib/db/prisma";
@@ -39,12 +39,7 @@ const page = async ({ params }: { params: { slug: string } }) => {
 
   if (!permission) return redirect("./");
 
-  const categories = await prisma.category.findMany({
-    select: {
-      title: true,
-      id: true,
-    },
-  });
+  const categories = await prisma.category.findMany();
 
   return (
     <div className="sm:container">

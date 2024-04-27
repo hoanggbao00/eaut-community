@@ -1,19 +1,21 @@
 "use client";
 
-import { formatTimeToNow } from "@/lib/utils";
-import { Vote } from "@prisma/client";
+import { checkYoutubeUrl, formatTimeToNow } from "@/lib/utils";
+import { PostVote } from "@prisma/client";
 import { MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { FC, useRef } from "react";
 import EditorOutput from "../editor/editor-output";
 import PostVoteClient from "./vote/post-vote-client";
 import { buttonVariants } from "../ui/button";
-import { ShowAvatar } from "../show-avatar";
+import { ShowAvatar } from "../shared/show-avatar";
 import { ExtendedPost } from "@/types/db";
 import PostMore from "./post-more";
 import { Session } from "next-auth";
+import Image from "next/image";
+import YoutubeEmbed from "../youtube-embed";
 
-type PartialVote = Pick<Vote, "type">;
+type PartialVote = Pick<PostVote, "type">;
 
 interface PostProps {
   session: Session | null;
@@ -47,10 +49,10 @@ const Post: FC<PostProps> = ({
     session?.user.role === "ADMIN";
 
   return (
-    <div className="rounded-md bg-white shadow">
-      <div className="flex flex-col justify-between px-6 py-4">
+    <div className="rounded-md bg-background text-foreground border border-muted overflow-hidden">
+      <div className="flex flex-col justify-between px-3 py-2">
         {/* post metadata */}
-        <div className="relative mt-1 flex max-h-40 items-center text-xs text-gray-500">
+        <div className="relative flex max-h-20 items-center overflow-hidden text-xs text-gray-500">
           {isPermission && (
             <PostMore
               permission={isPermission}
@@ -68,7 +70,7 @@ const Post: FC<PostProps> = ({
               <div>
                 <div className="flex items-center gap-2">
                   <a
-                    className="text-sm text-zinc-900 underline underline-offset-2"
+                    className="text-sm text-foreground underline underline-offset-2"
                     href={`/c/${communityName.toLowerCase()}`}
                   >
                     c/{communityName}
@@ -110,25 +112,40 @@ const Post: FC<PostProps> = ({
 
         {/* Title */}
         <a href={`/c/${communityName.toLowerCase()}/post/${post.id}`}>
-          <h1 className="py-2 text-lg font-semibold leading-6 text-gray-900">
+          <h1 className="py-2 text-2xl font-semibold leading-6 text-primary">
             {post.title}
           </h1>
 
           {/* content */}
-          <div
-            className="relative max-h-40 w-full overflow-clip text-sm"
-            ref={pRef}
-          >
-            <EditorOutput content={post.content} />
-            {pRef.current?.clientHeight === 160 ? (
-              // blur bottom if content is too long
-              <div className="absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent"></div>
-            ) : null}
-          </div>
+          {post.content && (
+            <div
+              className="relative max-h-40 w-full overflow-clip text-sm pb-2"
+              ref={pRef}
+            >
+              <EditorOutput content={post.content} />
+              {pRef.current?.clientHeight === 160 ? (
+                // blur bottom if content is too long
+                <div className="absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent"></div>
+              ) : null}
+            </div>
+          )}
+          {post.attachment &&
+            (checkYoutubeUrl(post.attachment) ? (
+              <YoutubeEmbed src={post.attachment} />
+            ) : (
+              <div className="relative h-[300px] w-full">
+                <Image
+                  src={post.attachment}
+                  alt="post attachment"
+                  fill
+                  className="rounded-md object-cover"
+                />
+              </div>
+            ))}
         </a>
       </div>
       {/* post vote */}
-      <div className="z-20 flex gap-2 bg-gray-50 px-4 py-4 text-sm sm:px-6">
+      <div className="flex gap-2 bg-muted text-sm sm:px-6 py-1">
         <PostVoteClient
           postId={post.id}
           initialVoteCount={_voteCount}
@@ -139,7 +156,7 @@ const Post: FC<PostProps> = ({
           className={buttonVariants({
             variant: "secondary",
             className:
-              "flex w-fit items-center gap-2 !rounded-full hover:text-sky-500",
+              "flex w-fit items-center gap-2 !rounded-full hover:text-sky-500 dark:border dark:border-muted-foreground",
           })}
         >
           <MessageSquare className="h-4 w-4" /> {commentCount} comments

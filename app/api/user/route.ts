@@ -5,6 +5,8 @@ import { ProfileValidator } from '@/lib/validators/username';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
+//PUT: /api/user/
+
 export async function PUT(req: Request) {
 	try {
 		const session = await getAuthSession();
@@ -14,12 +16,12 @@ export async function PUT(req: Request) {
 		}
 
 		const body = await req.json();
-		const { name, username } = ProfileValidator.parse(body);
+		const { username } = ProfileValidator.parse(body);
 
 		// check if username is taken
 		const isTaken = await prisma.user.findFirst({
 			where: {
-				username: name,
+				username: username,
 			},
 		});
 

@@ -1,4 +1,3 @@
-import SignIn from '@/components/auth-modal/sign-in';
 import SignUp from '@/components/auth-modal/sign-up';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

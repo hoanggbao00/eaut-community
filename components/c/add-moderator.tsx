@@ -14,7 +14,7 @@ import {
 import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
-import { ShowAvatar } from "../show-avatar";
+import { ShowAvatar } from "../shared/show-avatar";
 import { Loader2, X } from "lucide-react";
 import { Input } from "../ui/input";
 import { useRouter } from "next/navigation";
@@ -36,6 +36,7 @@ const AddModerator = ({
   const [selectItem, setSelectItem] = useState<selectItem[] | []>(moderators);
   const [query, setQuery] = useState("");
   const [isLoading, setLoading] = useState(false);
+  const [isSearching, setSearching] = useState(false);
   const router = useRouter();
 
   //Debounce search user
@@ -47,14 +48,14 @@ const AddModerator = ({
       );
 
       const filterData = data.filter((user) => {
-        //filter creator
+        //filter self
         if (user.id === sessionId) return false;
 
         // filter user is banned
         if (user.isBanned) return false;
 
         // filter user is follow this community
-        if (user.Follow.find((c) => c.communityId === communityId)) return true;
+        if (user.follow.find((c) => c.communityId === communityId)) return true;
 
         return true;
       });
@@ -66,24 +67,21 @@ const AddModerator = ({
         description: "Something went wrong.",
       });
     }
+
+    setSearching(false);
   }, 1000);
 
   // handle Update button
   const handleSave = async () => {
     setLoading(true);
     const ids = selectItem.map((s) => s.id);
+    const payload = {
+      communityId: communityId,
+      userIds: ids,
+    };
 
     try {
-      if (ids.length !== 0) {
-        const payload = {
-          communityId: communityId,
-          userIds: ids,
-        };
-        await axios.post("/api/community/moderator", payload);
-      } else {
-        const payload = { communityId: communityId };
-        await axios.delete("/api/community/moderator", { data: payload });
-      }
+      await axios.put("/api/community/moderator", payload);
 
       toast({
         title: "Moderators updated successfully",
@@ -137,7 +135,7 @@ const AddModerator = ({
         {selectItem && (
           <div className="flex max-h-56 flex-wrap gap-2 overflow-auto">
             {selectItem.map((s) => (
-              <div className="flex size-fit items-center gap-2 rounded-full bg-green-300 px-3 py-1 text-black">
+              <div key={s.id} className="flex size-fit items-center gap-2 rounded-full bg-green-300 px-3 py-1 text-black">
                 <ShowAvatar
                   className="size-6"
                   data={{
@@ -166,6 +164,7 @@ const AddModerator = ({
           <Input
             placeholder="Type a name or username to search"
             onChange={(e) => {
+              setSearching(true);
               handleSearch(e.target.value);
               setQuery(e.target.value);
             }}
@@ -192,8 +191,11 @@ const AddModerator = ({
             {!query && (
               <p className="py-2 text-center">Results will show here</p>
             )}
-            {searchData.length === 0 && query && (
-              <p className="py-2 text-center">No results found.</p>
+            {isSearching && query && (
+              <p className="py-2 text-center">Searching...</p>
+            )}
+            {!isSearching && query && searchData && (
+              <p className="py-2 text-center">No result found.</p>
             )}
           </div>
         </div>

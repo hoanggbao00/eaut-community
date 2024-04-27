@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Image as ImageIcon, Link2 } from "lucide-react";
 import { FC } from "react";
 import type { Session } from "next-auth";
-import { ShowAvatar } from "./show-avatar";
+import { ShowAvatar } from "./shared/show-avatar";
 import Link from "next/link";
 
 interface MiniCreatePostProps {
@@ -11,7 +11,7 @@ interface MiniCreatePostProps {
 
 const MiniCreatePost: FC<MiniCreatePostProps> = ({ session }) => {
   return (
-    <div className="mb-5 rounded-md bg-background shadow">
+    <div className="mb-5 rounded-md bg-background shadow border">
       <Link
         href="/submit"
 				scroll={false}

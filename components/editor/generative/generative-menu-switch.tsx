@@ -40,6 +40,7 @@ const GenerativeMenuSwitch = ({
             variant="ghost"
             onClick={() => onOpenChange(true)}
             size="sm"
+            disabled
           >
             <Magic className="h-5 w-5" />
             Ask AI

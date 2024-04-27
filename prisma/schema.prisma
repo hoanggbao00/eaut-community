@@ -61,15 +61,45 @@ enum RequestStatus {
   REJECTED
 }
 
-enum RequestType {
+enum VoteType {
+  UP
+  DOWN
+}
+
+enum Entity {
+  POST //create, update, vote, create comment
+  COMMENT // create, update, vote, create replies
+  REQUEST // create, approve, reject
+  COMMUNITY // new follower
+  OTHERS
+}
+
+enum ActionType {
   CREATE
   UPDATE
   DELETE
 }
 
-enum VoteType {
-  UP
-  DOWN
+model UpdateHistory {
+  id         String   @id @default(cuid()) @map("_id")
+  type       Entity
+  oldContent Json
+  newContent Json
+  createdAt  DateTime @default(now())
+  updatedBy  String
+  approvedBy String
+
+  userId String?
+  User   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  communityId String?
+  Community   Community? @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+  postId String?
+  Post   Post?   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  commentId String?
+  Comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 }
 
 // Model
@@ -79,180 +109,196 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  username      String?   @unique
+  role          UserRole  @default(USER)
+  isDeleted      Boolean   @default(false)
   createdAt     DateTime  @default(now())
-  username String?  @unique
-  role    UserRole @default(USER)
-  isBanned Boolean @default(false)
+
+  updateHistory UpdateHistory[]
 
   accounts Account[]
   sessions Session[]
 
-  createdCommunity   Community[]          @relation("CreatedBy")
-  updatedCommunity Community[] @relation("UpdatedCommunity")
+  // Community
+  createdCommunity   Community[]
   communityModerator CommunityModerator[] @relation("ModeratorOf")
+  follow             Follow[]
 
-  Post              Post[]
-  PostUpdated Post[] @relation("UpdatePost")
+  // Request
+  requestSender Request[] @relation("RequestSender")
 
-  Comment           Comment[]
-  CommentVote       CommentVote[]
-  Vote              Vote[]
-  Follow            Follow[]
+  // Post
+  post        Post[]
+  postVote    PostVote[]
+  comment     Comment[]
+  commentVote CommentVote[]
 
-  requestCreateCommunity RequestCommunity[] @relation("RequestUser")
-  requestUpdateBy RequestCommunity[] @relation("RequestUpdateBy")
-
-  notifier Notification[]
-  notifActor NotificationChange[]
+  // Notification
+  sender   Notification[] @relation("NotificationSender")
+  receiver Notification[] @relation("NotificationReceiver")
 }
 
 model Category {
   id        String      @id @default(cuid()) @map("_id")
   title     String      @unique
-  Community Community[]
+  icon String
+  community Community[]
 }
 
 model Community {
-  id          String    @id @default(cuid()) @map("_id")
-  name        String    @unique
-  description String?
-  cover       String?
-  image       String?
-  categoryId  String?
-  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  rules       Json[]
-  creatorId          String?
-  creator            User?                @relation("CreatedBy", fields: [creatorId], references: [id], onDelete: SetNull)
-  status RequestStatus @default(PENDING)
+  id             String   @id @default(cuid()) @map("_id")
+  name           String   @unique
+  description    String?
+  cover          String?
+  image          String?
+  rules          Json[]
   communityAlert String[]
+  creatorId      String
+  categoryId     String?
+  notifierIds    String[]
+  isAccessible   Boolean  @default(false)
+  createdAt      DateTime @default(now())
 
-  notificationUserIdAccess String[]
+  updateHistory UpdateHistory[]
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  updateByUsername String?
-  updatedBy  User? @relation("UpdatedCommunity", fields: [updateByUsername], references: username, onDelete: SetNull, onUpdate: Cascade)
+  creator   User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  category  Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  followers Follow[]
 
   posts Post[]
-  follows          Follow[]
-  moderators CommunityModerator[] @relation("HasModerators")
-  requestTo RequestCommunity[] @relation("RequestTo")
+
+  moderators CommunityModerator[]
+
+  requests Request[] @relation("CommunityRequest")
+
+  notification Notification[] @relation("CommunityNotification")
 }
 
 model CommunityModerator {
-  id          String    @id @default(cuid()) @map("_id")
+  id          String   @id @default(cuid()) @map("_id")
   userId      String
-  User        User      @relation("ModeratorOf",fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   communityId String
-  Community   Community @relation("HasModerators", fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdDate DateTime @default(now())
+
+  user      User      @relation("ModeratorOf", fields: [userId], references: [id], onDelete: Cascade)
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
 }
 
-model RequestCommunity {
-  id String @id @default(cuid()) @map("_id")
-  communityId String
-  community Community @relation("RequestTo", fields: [communityId], references: [id])
-  userId String 
-  type RequestType
-  newContent Json?
-  user User @relation("RequestUser",fields: [userId], references: [id], onDelete: Cascade)
-  status RequestStatus @default(PENDING)
-  createdAt DateTime @default(now())
-  updateAt DateTime @updatedAt
-  updateById String?
-  updateBy User? @relation("RequestUpdateBy", fields: [updateById], references: [id], onDelete: NoAction)
+model Request {
+  id          String        @id @default(cuid()) @map("_id")
+  senderId    String
+  sendTo      String
+  requestType ActionType
+  requestFor  Entity
+  postId      String?
+  communityId String?
+  communityName String?
+  newContent  Json?
+  status      RequestStatus
+  createdAt   DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+  updateBy    String?
+  detail      String
+
+  user      User       @relation("RequestSender", fields: [senderId], references: [id], onDelete: Cascade)
+  community Community? @relation("CommunityRequest",fields: [communityId], references: [id], onDelete: SetNull)
+  post      Post?      @relation("PostInRequest", fields: [postId], references: [id], onDelete: SetNull)
+
+  notification Notification[] @relation("RequestNotification")
 }
 
 model Follow {
-  id          String    @id @default(cuid()) @map("_id")
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          String   @id @default(cuid()) @map("_id")
   userId      String
-  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
   communityId String
   createdDate DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
 }
 
 model Post {
   id          String    @id @default(cuid()) @map("_id")
   title       String
   content     Json?
-  authorId String?
-  author   User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
-  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  attachment  String?
+  authorId    String
   communityId String
-  notificationUserIdAccess String[]
-
+  isArchived  Boolean?
+  achivedDate DateTime?
+  notifierIds String[]
   createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  updatedByUsername   String?
-  updatedBy User? @relation("UpdatePost", fields: [updatedByUsername], references: username, onDelete: SetNull, onUpdate: Cascade)
 
-  comments     Comment[]
-  votes        Vote[]
-  deletedBy    String?
-  deletedDate  DateTime?
+  updateHistory UpdateHistory[]
+
+  comments Comment[]
+  votes    PostVote[]
+
+  includeNotification Notification[] @relation("PostNotification")
+
+  author        User      @relation(fields: [authorId], references: [id])
+  community     Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  postInRequest Request[] @relation("PostInRequest")
 }
 
 model Comment {
   id        String   @id @default(cuid()) @map("_id")
-  text      String
-  author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
-  authorId  String?
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  content   String
+  authorId  String
   postId    String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
   replyToId String?
-  replyTo   Comment?  @relation("ReplyTo", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  replies   Comment[] @relation("ReplyTo")
+  createdAt DateTime @default(now())
 
-  votes CommentVote[]
+  updateHistory UpdateHistory[]
+
+  replyTo      Comment?       @relation("ReplyTo", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies      Comment[]      @relation("ReplyTo")
+  author       User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post         Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
+  votes        CommentVote[]
+  notification Notification[] @relation("CommentNotification")
 }
-model Vote {
+
+model PostVote {
   id     String   @id @default(cuid()) @map("_id")
-  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
-  post   Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId String
   type   VoteType
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model CommentVote {
   id        String   @id @default(cuid()) @map("_id")
-  user      User     @relation(fields: [userId], references: [id])
   userId    String
-  comment   Comment  @relation(fields: [commentId], references: [id])
   commentId String
   type      VoteType
-}
 
-// NOTIFICATION SYSTEM
-model NotificationObject {
-  id        String   @id @default(cuid()) @map("_id")
-  type Int
-  entityId String
-  status Boolean
-  createdAt DateTime @default(now())
-  Notification Notification?
-
-  notiChange NotificationChange?
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 }
 
 model Notification {
-  id        String   @id @default(cuid()) @map("_id")
-  notiObjectId String @unique
-  notiObject NotificationObject @relation(fields: [notiObjectId], references: [id])
-  notifierId String @unique
-  notifier User @relation(fields: [notifierId], references: [id], onDelete: Cascade)
-  status Boolean
-}
+  id         String  @id @default(cuid()) @map("_id")
+  type       Entity
+  message    String
+  senderId   String
+  notifierId String
+  entityId   String?
+  communityName String?
+  status  Boolean @default(false)
+  createdAt DateTime @default(now())
 
-model NotificationChange {
-  id        String   @id @default(cuid()) @map("_id")
-  notiObjectId String @unique
-  notiObject NotificationObject @relation(fields: [notiObjectId], references: [id])
-  actorId String @unique
-  actor User @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  post Post? @relation("PostNotification", fields: [entityId], references: [id], onDelete: Cascade)
+
+  community Community? @relation("CommunityNotification", fields: [entityId], references: [id], onDelete: SetNull)
+
+  request Request? @relation("RequestNotification", fields: [entityId], references: [id], onDelete: SetNull)
+
+  comment Comment? @relation("CommentNotification", fields: [entityId], references: [id], onDelete: SetNull)
+
+  sender User @relation("NotificationSender", fields: [senderId], references: [id], onDelete: Cascade)
+
+  notifier User @relation("NotificationReceiver", fields: [notifierId], references: [id], onDelete: Cascade)
 }

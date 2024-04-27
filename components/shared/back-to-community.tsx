@@ -1,5 +1,5 @@
 import { ChevronLeft } from "lucide-react";
-import { buttonVariants } from "./ui/button";
+import { buttonVariants } from "../ui/button";
 
 const BackToCommunity = () => {
   return (

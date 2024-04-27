@@ -8,18 +8,21 @@ import { FC, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { CommentRequest } from "@/lib/validators/comment";
 import { Loader2 } from "lucide-react";
-import { Session } from "next-auth";
+import { Session, User } from "next-auth";
+import { Button } from "@/components/ui/button";
 
 interface CreateCommentProps {
   postId: string;
   replyToId?: string;
-  session: Session | null;
+  user?: User;
+  mutate: () => void;
 }
 
 const CreateComment: FC<CreateCommentProps> = ({
   postId,
   replyToId,
-  session,
+  user,
+  mutate,
 }) => {
   const [input, setInput] = useState<string>("");
   const [isLoading, setLoading] = useState(false);
@@ -33,12 +36,15 @@ const CreateComment: FC<CreateCommentProps> = ({
   const handleComment = async () => {
     setLoading(true);
     try {
-      const payload: CommentRequest = { postId, text: input, replyToId };
+      const payload: CommentRequest = { postId, content: input, replyToId };
 
-      const { data } = await axios.put(`/api/community/post/comment/`, payload);
+      const { data } = await axios.post(
+        `/api/community/post/comment/`,
+        payload,
+      );
       if (data) {
         setInput("");
-        router.refresh();
+        mutate();
       }
     } catch (error) {
       console.log(error);
@@ -57,40 +63,48 @@ const CreateComment: FC<CreateCommentProps> = ({
     <div className="w-full">
       <Label htmlFor="comment">Your comment</Label>
       <div className="mt-2">
-        <div className="relative w-full">
-          <TextareaAutoSize
-            id="comment"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={
-              session ? "What are your thoughts?" : "Sign in to comment"
-            }
-            className="w-full resize-none rounded-md border p-2"
-            onKeyDown={handleCtrlEnter}
-          />
-          {!session && (
+        <div className="relative">
+          <div className="relative w-full">
+            <TextareaAutoSize
+              id="comment"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={
+                user ? "What are your thoughts?" : "Sign in to comment"
+              }
+              className="w-full resize-none rounded-md border p-2"
+              onKeyDown={handleCtrlEnter}
+            />
+            {isLoading && (
+              <span className="absolute right-2 top-1/2 -translate-y-1/2">
+                <Loader2 className="h-5 w-5 animate-spin" />
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center justify-end sm:justify-between">
+            <p className="mt-2 hidden text-xs leading-[0.5rem] text-gray-500 sm:block">
+              Press
+              <kbd className="ml-1 rounded-md border bg-muted px-1 uppercase">
+                Ctrl
+              </kbd>
+              +
+              <kbd className="mr-1 rounded-md border bg-muted px-1 uppercase">
+                Enter
+              </kbd>
+              to submit your comment.
+            </p>
+            <Button onClick={handleComment} size="sm" disabled={!input}>
+              Send
+            </Button>
+          </div>
+          {!user && (
             <button
               onClick={() => router.push("/sign-in")}
               className="absolute inset-0 bottom-1 flex w-full items-center justify-center bg-black/10"
             />
           )}
-          {isLoading && (
-            <span className="absolute right-2 top-1/2 -translate-y-1/2">
-              <Loader2 className="h-5 w-5 animate-spin" />
-            </span>
-          )}
         </div>
-        <p className="mt-2 text-xs leading-[0.5rem] text-gray-500">
-          Press
-          <kbd className="ml-1 rounded-md border bg-muted px-1 uppercase">
-            Ctrl
-          </kbd>
-          +
-          <kbd className="mr-1 rounded-md border bg-muted px-1 uppercase">
-            Enter
-          </kbd>
-          to submit your comment.
-        </p>
       </div>
     </div>
   );

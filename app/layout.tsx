@@ -18,11 +18,9 @@ export const metadata: Metadata = {
 export default function RootLayout({
 	children,
 	authModal,
-	submitModal,
 }: Readonly<{
 	children: React.ReactNode;
 	authModal: React.ReactNode;
-	submitModal: React.ReactNode;
 }>) {
 	return (
 		<html lang='en'>
@@ -36,7 +34,6 @@ export default function RootLayout({
 				<Providers>
 					<Header />
 					{authModal}
-					{submitModal}
 					<main className='mx-auto h-full px-2 sm:px-2 pt-20 sm:container xl:pl-72'>
 						{children}
 					</main>

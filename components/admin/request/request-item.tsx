@@ -1,5 +1,5 @@
 "use client";
-import { ShowAvatar } from "@/components/show-avatar";
+import { ShowAvatar } from "@/components/shared/show-avatar";
 import { badgeVariants } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,31 +17,57 @@ import {
 } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
 import { cn, formatTimeToNow } from "@/lib/utils";
-import { RequestType, RequestStatus, RequestCommunity } from "@prisma/client";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import { useState } from "react";
+import {
+  ActionType,
+  Community,
+  Request,
+  RequestStatus,
+  User,
+} from "@prisma/client";
 interface RequestItemProps {
-  request: RequestCommunity & {
-    community: { status: RequestStatus; name: string, id: string },
-    updateBy: {name: string | null} | null;
-  };
-  user: { name: string | null; image: string | null; username: string | null };
+  request: Request;
+  user: Pick<User, "name" | "username" | "image">;
+  community: Pick<Community, "name" | "id"> | null;
 }
 
-const RequestItem: React.FC<RequestItemProps> = ({ request, user }) => {
+type HistoryContent = {
+  description?: string;
+  categoryId?: string;
+  categoryName?: string;
+  rules: {
+    title: string;
+    detail?: string;
+  }[];
+};
+
+const RequestItem: React.FC<RequestItemProps> = ({
+  request,
+  user,
+  community,
+}) => {
+  const [isLoading, setLoading] = useState({ approve: false, reject: false });
   const router = useRouter();
 
+  const newContent = request.newContent as HistoryContent;
+
   const handleAction = async (type: RequestStatus) => {
+    if (type === "ACCEPTED") setLoading({ approve: true, reject: false });
+    else setLoading({ approve: false, reject: true });
+
     const payload = {
-      id: request.id,
+      requestId: request.id,
       requestStatus: type,
-      communityId: request.communityId,
     };
 
     try {
-      await axios.put("/api/request", payload);
+      if (type === RequestStatus.ACCEPTED)
+        await axios.put("/api/request/approve", payload);
+      else await axios.put("/api/request/reject", payload);
 
       toast({
         title: `Request ${type === RequestStatus.ACCEPTED ? "Approved!" : "Rejected!"}`,
@@ -55,6 +81,8 @@ const RequestItem: React.FC<RequestItemProps> = ({ request, user }) => {
         description: "There was an error updating your request.",
         variant: "destructive",
       });
+    } finally {
+      setLoading({ approve: false, reject: false });
     }
   };
 
@@ -67,30 +95,31 @@ const RequestItem: React.FC<RequestItemProps> = ({ request, user }) => {
               <span
                 className={cn(badgeVariants(), "mr-2", {
                   "bg-green-300 text-green-900 hover:bg-green-300/70":
-                    request.community.status === RequestStatus.ACCEPTED,
+                    request.status === RequestStatus.ACCEPTED,
                   "bg-yellow-300 text-yellow-900 hover:bg-yellow-300/70":
-                    request.community.status === RequestStatus.PENDING,
+                    request.status === RequestStatus.PENDING,
                   "bg-red-300 text-red-900 hover:bg-red-300/70":
-                    request.community.status === RequestStatus.REJECTED,
+                    request.status === RequestStatus.REJECTED,
                 })}
               >
-                {request.community.status}
+                {request.status}
               </span>
               <span
                 className={cn(badgeVariants(), "mr-2", {
                   "bg-green-300 text-green-900 hover:bg-green-300/70":
-                    request.type === RequestType.CREATE,
+                    request.requestType === ActionType.CREATE,
                   "bg-yellow-300 text-yellow-900 hover:bg-yellow-300/70":
-                    request.type === RequestType.UPDATE,
+                    request.requestType === ActionType.UPDATE,
                 })}
               >
-                {request.type}
+                {request.requestType}
               </span>
-              c/{request.community.name}
+              c/{request.communityName}
             </p>
             {request.updateBy && (
               <span className="ml-2 text-xs font-normal text-muted-foreground">
-                Last update: {formatTimeToNow(new Date(request.updateAt))} by <b>{request.updateBy.name}</b>
+                Last update: {formatTimeToNow(new Date(request.updateAt))} by{" "}
+                <b>{request.updateBy}</b>
               </span>
             )}
           </CardTitle>
@@ -120,23 +149,61 @@ const RequestItem: React.FC<RequestItemProps> = ({ request, user }) => {
             </TooltipContent>
           </CardDescription>
         </CardHeader>
-        <Link href={`/c/${request.community.name.toLowerCase()}?tab=about`}>
+        <Link
+          href={
+            community ? `/c/${community.name?.toLowerCase()}?tab=about` : "#"
+          }
+        >
           <CardContent className="p-3">
             <p>
-              User <b>u/{user.username}</b> has request to create a community.
+              User <b>u/{user.username}</b> has request to{" "}
+              {request.requestType.toLowerCase()} community.
             </p>
-            <p>{!request.updateById && " Let's review it"}</p>
+            <p>{!request.updateBy && " Let's review it"}</p>
+            {newContent && request.requestType === "UPDATE" && (
+              <div className="divide-y-2 border-t-2 text-sm text-yellow-800">
+                {newContent.categoryName && (
+                  <p>Change category to: {newContent.categoryName}</p>
+                )}
+                {newContent.description && (
+                  <p>Change description to: {newContent.description}</p>
+                )}
+                {newContent.rules && (
+                  <div>
+                    <p>Change rules to: </p>
+                    {newContent.rules.map((rule, index) => (
+                      <div key={`${request.id}-rule${index}`}>
+                        <p>
+                          {index + 1}: {rule.title}
+                        </p>
+                        {rule.detail && <p>Detail: {rule.detail}</p>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Link>
-        {!request.updateById && (
+        {!request.updateBy && (
           <CardFooter className="flex items-center justify-end gap-2 pb-3">
-            <Button onClick={() => handleAction(RequestStatus.ACCEPTED)}>
+            <Button
+              disabled={isLoading.approve}
+              onClick={() => handleAction(RequestStatus.ACCEPTED)}
+            >
+              {isLoading.approve && (
+                <Loader2 className="mr-2 size-4 animate-spin" />
+              )}
               Approve
             </Button>
             <Button
+              disabled={isLoading.reject}
               onClick={() => handleAction(RequestStatus.REJECTED)}
               variant="destructive"
             >
+              {isLoading.reject && (
+                <Loader2 className="mr-2 size-4 animate-spin" />
+              )}
               Reject
             </Button>
           </CardFooter>

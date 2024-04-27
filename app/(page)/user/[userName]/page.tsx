@@ -1,4 +1,4 @@
-import { ShowAvatar } from "@/components/show-avatar";
+import { ShowAvatar } from "@/components/shared/show-avatar";
 import UserCard from "@/components/user/user-card";
 import prisma from "@/lib/db/prisma";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,8 +6,8 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import PostFeed from "@/components/post-feed";
-import { getServerSession } from "next-auth";
 import UserCommentFeed from "@/components/user/user-comment-feed";
+import { getAuthSession } from "@/lib/auth";
 
 interface Props {
   params: { userName: string };
@@ -37,14 +37,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const page = async ({ params, searchParams }: Props) => {
   const { tab } = searchParams;
 
-  const session = await getServerSession();
+  const session = await getAuthSession();
 
   const user = await prisma.user.findFirst({
     where: {
       username: params.userName,
     },
     include: {
-      Comment: {
+      comment: {
         include: {
           post: {
             include: {
@@ -62,7 +62,7 @@ const page = async ({ params, searchParams }: Props) => {
           createdAt: "desc",
         },
       }, // comment
-      Post: {
+      post: {
         include: {
           community: true,
           votes: true,
@@ -78,17 +78,17 @@ const page = async ({ params, searchParams }: Props) => {
           name: true,
         },
       }, // createdCommunity
-      Follow: {
+      follow: {
         include: {
           community: true,
         },
       }, // followedCommunity
       _count: {
         select: {
-          Post: true,
-          Comment: true,
-          Vote: true,
-          CommentVote: true,
+          post: true,
+          comment: true,
+          postVote: true,
+          commentVote: true,
         },
       }, // Count
     }, // prisma
@@ -97,7 +97,7 @@ const page = async ({ params, searchParams }: Props) => {
   if (!user) return notFound();
 
   return (
-    <main className="relative w-full md:pr-80 pb-4">
+    <main className="relative w-full pb-4 md:pr-80">
       <div className="space-y-3 pr-3">
         <div className="flex items-end gap-4">
           <ShowAvatar
@@ -105,41 +105,71 @@ const page = async ({ params, searchParams }: Props) => {
             data={{ name: user.username, image: user.image }}
           />
           <div>
-            <h3 className="text-xl font-semibold">{user.name}</h3>
+            <h3 className="text-xl font-semibold">
+              {user.name}
+            </h3>
             <p className="text-lg">u/{user.username}</p>
           </div>
         </div>
-        <Tabs defaultValue={tab ? tab : "posts"} className="!mt-12">
-          <TabsList>
-            <TabsTrigger value="posts">Posts</TabsTrigger>
-            <TabsTrigger value="comments">Comments</TabsTrigger>
-          </TabsList>
-          <Separator className="my-3" />
-          <TabsContent value="posts">
-            <PostFeed
-              initialPosts={user.Post}
-              showCommunityName={true}
-              session={session}
-              userId={user.id}
-            />
-          </TabsContent>
-          <TabsContent value="comments">
-            <UserCommentFeed
-              comments={user.Comment}
-              userName={user.username!}
-            />
-          </TabsContent>
-        </Tabs>
+        {!user.isDeleted && (
+          <Tabs defaultValue={tab ? tab : "posts"} className="!mt-12">
+            <TabsList>
+              <TabsTrigger value="posts">Posts</TabsTrigger>
+              <TabsTrigger value="comments">Comments</TabsTrigger>
+              <TabsTrigger value="info" className="md:hidden">
+                Info
+              </TabsTrigger>
+            </TabsList>
+            <Separator className="mt-2" />
+            <TabsContent value="posts">
+              <PostFeed
+                initialPosts={user.post}
+                showCommunityName={true}
+                session={session}
+                userId={user.id}
+              />
+            </TabsContent>
+            <TabsContent value="comments">
+              <UserCommentFeed
+                comments={user.comment}
+                userName={user.username!}
+              />
+            </TabsContent>
+            <TabsContent value="info">
+              <UserCard
+                userId={session?.user.id}
+                role={session?.user.role}
+                className="block w-full"
+                user={{
+                  id: user.id,
+                  name: user.name,
+                  followed: user.follow,
+                  created: user.createdCommunity,
+                  postCount: user._count.post + user._count.postVote,
+                  commentCount: user._count.comment + user._count.commentVote,
+                }}
+              />
+            </TabsContent>
+          </Tabs>
+        )}
       </div>
-      <UserCard
-        user={{
-          name: user.name,
-          followed: user.Follow,
-          created: user.createdCommunity,
-          postCount: user._count.Post + user._count.Vote,
-          commentCount: user._count.Comment + user._count.CommentVote,
-        }}
-      />
+      {!user.isDeleted && (
+        <div className="hidden w-80 md:block">
+          <UserCard
+            role={session?.user.role}
+            className="fixed right-4 top-[9%]"
+            userId={session?.user.id}
+            user={{
+              id: user.id,
+              name: user.name,
+              followed: user.follow,
+              created: user.createdCommunity,
+              postCount: user._count.post + user._count.postVote,
+              commentCount: user._count.comment + user._count.commentVote,
+            }}
+          />
+        </div>
+      )}
     </main>
   );
 };

@@ -1,16 +1,13 @@
 import RequestItem from "@/components/admin/request/request-item";
+import RefreshButton from "@/components/shared/refresh-button";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { getAuthSession } from "@/lib/auth";
 import prisma from "@/lib/db/prisma";
-import { UserRole } from "@prisma/client";
-import { notFound, redirect } from "next/navigation";
 
 const page = async () => {
-  const session = await getAuthSession();
-  if (!session) return redirect("/");
-  if (session.user.role !== UserRole.ADMIN) return notFound();
-
-  const request = await prisma.requestCommunity.findMany({
+  const request = await prisma.request.findMany({
+    where: {
+      sendTo: "ADMIN",
+    },
     include: {
       user: {
         select: {
@@ -23,12 +20,6 @@ const page = async () => {
         select: {
           id: true,
           name: true,
-          status: true
-        },
-      },
-      updateBy: {
-        select: {
-          name: true,
         },
       },
     },
@@ -36,10 +27,17 @@ const page = async () => {
 
   return (
     <TooltipProvider>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-        {request.length !== 0
-          ? request.map((r) => <RequestItem request={r} user={r.user} />)
-          : <p>Nothing to show</p>}
+      <div className="flex justify-end items-center">
+        <RefreshButton />
+      </div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+        {request.length !== 0 ? (
+          request.map((r) => (
+            <RequestItem key={r.id} request={r} user={r.user} community={r.community} />
+          ))
+        ) : (
+          <p>Nothing to show</p>
+        )}
       </div>
     </TooltipProvider>
   );

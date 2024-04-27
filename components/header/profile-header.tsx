@@ -72,6 +72,9 @@ const ProfileHeader = ({
                   <DropdownMenuItem asChild>
                     <Link href="/admin/request">Manage Request</Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin/category">Manage Category</Link>
+                  </DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>

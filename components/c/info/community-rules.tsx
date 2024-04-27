@@ -4,7 +4,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../ui/accordion";
+} from "../../ui/accordion";
 
 const CommunityRules = ({ rules }: { rules: Rules[] }) => {
   return (
@@ -16,7 +16,7 @@ const CommunityRules = ({ rules }: { rules: Rules[] }) => {
         <AccordionItem
           key={`rule-${index}`}
           value={`rule-${index}`}
-          className="border-b-0 text-gray-500"
+          className="border-b-0"
         >
           <AccordionTrigger className="rounded-sm px-3 py-1.5 font-normal hover:bg-black/5 hover:no-underline">
             <p>

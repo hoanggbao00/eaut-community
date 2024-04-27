@@ -56,7 +56,7 @@ const PostFeed: FC<PostFeedProps> = ({
   }, [entry]);
 
   return (
-    <div className="flex flex-1 flex-col space-y-6">
+    <div className="flex flex-1 flex-col space-y-6 pb-3">
       {posts &&
         posts.map((post, index) => {
           const voteCount = post.votes.reduce((acc, vote) => {
@@ -103,11 +103,11 @@ const PostFeed: FC<PostFeedProps> = ({
           }
         })}
 
-      {isFetching && (
+      {isFetching ? (
         <li className="flex justify-center">
           <Loader2 className="h-6 w-6 animate-spin text-zinc-500" />
         </li>
-      )}
+      ): <p className="mx-auto py-2 text-xl uppercase text-muted-foreground">End of content</p>}
     </div>
   );
 };

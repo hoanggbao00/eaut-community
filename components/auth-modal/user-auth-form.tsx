@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { Icons } from "@/components/icons";
+import { Icons } from "@/components/shared/icons";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 

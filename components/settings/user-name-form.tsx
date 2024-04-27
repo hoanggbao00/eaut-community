@@ -51,6 +51,12 @@ export const UserNameForm = ({
     setLoading(true);
     try {
       const imageUrl = image && (await uploadImage(image));
+      if (!imageUrl)
+        toast({
+          title: "Failed to upload image",
+          variant: "warning",
+        });
+        
       const payload: FormData = {
         ...data,
         ...(imageUrl && { image: imageUrl }),

@@ -79,7 +79,7 @@ const PostVoteClient = ({
   };
 
   return (
-    <div className="flex gap-2 overflow-hidden rounded-full bg-secondary">
+    <div className="flex gap-2 overflow-hidden rounded-full bg-muted dark:border dark:border-muted-foreground">
       {/* upvote */}
       <Button
         onClick={() => handleVote("UP")}

@@ -8,7 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Icons } from "@/components/icons";
+import Image from "next/image";
 
 const ItemGroup = ({
   category,
@@ -21,7 +21,7 @@ const ItemGroup = ({
         <AccordionItem value={category.title}>
           <AccordionTrigger className="w-full gap-2 rounded-sm p-2 px-3 hover:bg-foreground/10">
             <span className="flex items-center gap-2 text-gray-700">
-              {Icons.getIcon(slugify(category.title), "h-5 w-5")}
+              <Image src={category.icon} width="24" height="24" alt="icon" />
               {category.title}
             </span>
           </AccordionTrigger>
@@ -29,7 +29,7 @@ const ItemGroup = ({
             {category.Community.map((c) => (
               <MenuItem
                 key={c.id}
-                iconHref={c.picture}
+                iconHref={c.image}
                 text={c.name}
                 href={`/c/${c.name}`}
                 className="ml-6 rounded-none rounded-r-md border-l-2 px-0 pl-1 hover:border-gray-500"
@@ -41,19 +41,8 @@ const ItemGroup = ({
     </CollapsibleContent>
   ) : (
     <CollapsibleContent>
-      <MenuItem icon={<Play />} text={category.title} href="" />
+      <MenuItem iconHref={`/${category.icon}`} text={category.title} />
     </CollapsibleContent>
   );
 };
-
-function slugify(s: string) {
-  if (!s) return "";
-
-  return s
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-");
-}
-
 export default ItemGroup;

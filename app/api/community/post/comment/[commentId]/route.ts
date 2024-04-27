@@ -10,14 +10,12 @@ export async function DELETE(
   if (!session) return NextResponse.json("Unauthorized", { status: 422 });
 
   try {
-    const deletedComment = await prisma.comment.delete({
+    await prisma.comment.delete({
       where: {
         id: params.commentId,
       },
     });
 
-    if (!deletedComment)
-      return NextResponse.json("Something went wrong", { status: 400 });
     return NextResponse.json("ok");
   } catch (error) {
     console.log(error);
@@ -26,28 +24,41 @@ export async function DELETE(
   }
 }
 
+
+/**
+ * update a comment
+ * @body {oldContent, content} 
+ * @returns 
+ */
 export async function PUT(
   req: NextRequest,
   { params }: { params: { commentId: string } },
 ) {
   const session = await getAuthSession();
-  if (!session) return NextResponse.json("Unauthorized", { status: 422 });
+  if (!session) return NextResponse.json("Unauthorized", { status: 401 });
 
   const body = await req.json();
 
   try {
-    const updatedComment = await prisma.comment.update({
+    await prisma.comment.update({
       where: {
         id: params.commentId,
       },
       data: {
-        ...body,
-        //TODO: set modifiedBy and modifiedDate
+        content: body.content,
+        updateHistory: {
+          create: {
+            userId: session.user.id,
+            approvedBy: session.user.username!,
+            newContent: body.content,
+            oldContent: body.oldContent,
+            type: "COMMENT",
+            updatedBy: session.user.id,
+          },
+        },
       },
     });
 
-    if (!updatedComment)
-      return NextResponse.json("Something went wrong", { status: 400 });
     return NextResponse.json("ok");
   } catch (error) {
     console.log(error);

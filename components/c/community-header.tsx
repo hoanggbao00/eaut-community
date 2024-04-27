@@ -3,7 +3,7 @@ import { Session } from "next-auth";
 import Image from "next/image";
 import CommunityAction from "./community-action";
 import { Badge } from "../ui/badge";
-import { ShowAvatar } from "../show-avatar";
+import { ShowAvatar } from "../shared/show-avatar";
 
 interface CommunityHeaderProps {
   memberCount: number;
@@ -11,7 +11,7 @@ interface CommunityHeaderProps {
   categoryTitle: string;
   community: Pick<
     Community,
-    "name" | "image" | "cover" | "id" | "creatorId" | "status"
+    "name" | "image" | "cover" | "id" | "creatorId" | "isAccessible"
   >;
   isModerator: boolean;
 }
@@ -49,7 +49,7 @@ const CommunityHeader: React.FC<CommunityHeaderProps> = ({
         <div className="w-1/2 md:flex-[2] md:pl-32">
           <h1 className="flex items-center gap-2 text-2xl font-bold md:text-3xl">
             {community.name}
-            {community.status === RequestStatus.PENDING ? (
+            {community.isAccessible === false ? (
               <Badge className="bg-yellow-200 text-yellow-900 hover:bg-yellow-300/80">
                 Pending Reviews
               </Badge>
@@ -63,7 +63,7 @@ const CommunityHeader: React.FC<CommunityHeaderProps> = ({
             {memberCount} follower
           </span>
         </div>
-        {community.status !== RequestStatus.PENDING && (
+        {community.isAccessible === true && (
           <CommunityAction
             isModerator={isModerator}
             session={session}

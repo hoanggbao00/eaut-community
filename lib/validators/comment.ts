@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export const CommentValidator = z.object({
   postId: z.string(),
-  text: z.string(),
+  content: z.string(),
   replyToId: z.string().optional()
 })
 

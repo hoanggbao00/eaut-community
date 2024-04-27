@@ -1,23 +1,28 @@
-import BackToCommunity from "@/components/back-to-community";
-import CommunityInfo from "@/components/c/community-info";
+import BackToCommunity from "@/components/shared/back-to-community";
+import CommunityInfo from "@/components/c/info/community-info";
 import CommentsSection from "@/components/comments/comments-section";
 import EditorOutput from "@/components/editor/editor-output";
 import PostEdit from "@/components/post-edit";
 import PostVoteServer from "@/components/post/vote/post-vote-server";
 import PostMore from "@/components/post/post-more";
 import VoteSkeleton from "@/components/skeleton/vote-skeleton";
-import { ShowAvatar } from "@/components/show-avatar";
+import { ShowAvatar } from "@/components/shared/show-avatar";
 import { getAuthSession } from "@/lib/auth";
 import prisma from "@/lib/db/prisma";
-import { formatTimeToNow } from "@/lib/utils";
+import { checkYoutubeUrl, formatTimeToNow } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import YoutubeEmbed from "@/components/youtube-embed";
+import ReceiveNotification from "@/components/post/receive-notification";
 
 interface CommunityPostPageProps {
   params: {
     postId: string;
+    slug: string;
   };
   searchParams: {
     edit: string;
@@ -73,7 +78,7 @@ const CommunityPostPage = async ({
           },
           _count: {
             select: {
-              follows: true,
+              followers: true,
             },
           },
         },
@@ -89,9 +94,9 @@ const CommunityPostPage = async ({
     post.community.moderators.length > 0;
 
   return (
-    <div>
-      <div className="flex h-full items-start justify-between">
-        <div className="w-full flex-1 rounded-sm bg-white p-4">
+    <div className="flex h-full items-start justify-between gap-2">
+      <div className="w-full flex-1 bg-background">
+        <div className="rounded-md p-2 dark:border dark:border-muted-foreground">
           <BackToCommunity />
           {!isEdit ? (
             <>
@@ -104,53 +109,57 @@ const CommunityPostPage = async ({
                     communityName={post.community.name}
                   />
                 )}
+                {session?.user && (
+                  <ReceiveNotification
+                    notifierIds={post.notifierIds}
+                    userId={session.user.id}
+                    postId={post.id}
+                  />
+                )}
                 <ShowAvatar
                   data={{
-                    name: post.author!.name,
-                    image: post.author!.image,
+                    name: post.author.name,
+                    image: post.author.image,
                   }}
                   className="h-7 w-7"
                 />
                 <div>
-                  <h3 className="text-sm font-medium">
-                    c/{post?.community.name}
+                  <h3 className="text-sm font-medium hover:underline">
+                    <a href={`/c/${post.community.name}`}>
+                      c/{post.community.name}
+                    </a>
                   </h3>
                   <p className="text-xs text-gray-500">
-                    Posted by {post.author!.username}
+                    <Link
+                      href={`/user/${post.author.username}`}
+                      className="hover:underline"
+                    >
+                      Posted by <b>{post.author!.username}</b>
+                    </Link>
                     {" • "}
                     {formatTimeToNow(new Date(post?.createdAt))}
                   </p>
                 </div>
               </div>
-              <h1 className="py-2 text-2xl font-semibold leading-6 text-gray-900">
+              <h1 className="py-2 text-2xl font-semibold leading-6 text-primary">
                 {post?.title}
               </h1>
-
+              {post.attachment &&
+                (checkYoutubeUrl(post.attachment) ? (
+                  <div className="py-1">
+                    <YoutubeEmbed src={post.attachment} />
+                  </div>
+                ) : (
+                  <div className="relative my-1 aspect-video w-full">
+                    <Image
+                      src={post.attachment}
+                      alt="post attachment"
+                      fill
+                      className="rounded-md object-contain"
+                    />
+                  </div>
+                ))}
               <EditorOutput content={post?.content} />
-              <Suspense fallback={<VoteSkeleton />}>
-                <div className="mt-2 w-fit">
-                  <PostVoteServer
-                    postId={post?.id}
-                    getData={async () => {
-                      return await prisma.post.findUnique({
-                        where: {
-                          id: params.postId,
-                        },
-                        include: {
-                          votes: true,
-                        },
-                      });
-                    }}
-                  />
-                </div>
-              </Suspense>
-              <Suspense
-                fallback={
-                  <Loader2 className="h-5 w-5 animate-spin text-zinc-500" />
-                }
-              >
-                <CommentsSection postId={post?.id} />
-              </Suspense>
             </>
           ) : (
             <PostEdit
@@ -158,18 +167,47 @@ const CommunityPostPage = async ({
               postContent={post.content}
               postTitle={post.title}
               communityName={post.community.name}
+              attachmentUrl={post.attachment}
             />
           )}
         </div>
-
-        {/* Community info */}
-        <div className="hidden lg:block">
-          <CommunityInfo
-            community={post.community}
-            memberCount={post.community._count.follows}
-            isSinglePost={true}
-          />
+        <div>
+          <Suspense fallback={<VoteSkeleton />}>
+            <div className="mt-2 w-fit">
+              <PostVoteServer
+                postId={post?.id}
+                getData={async () => {
+                  return await prisma.post.findUnique({
+                    where: {
+                      id: params.postId,
+                    },
+                    include: {
+                      votes: true,
+                    },
+                  });
+                }}
+              />
+            </div>
+          </Suspense>
+          <Suspense
+            fallback={
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin text-muted-foreground" />{" "}
+                Loading comment...
+              </>
+            }
+          >
+            <CommentsSection postId={post?.id} communityName={params.slug} />
+          </Suspense>
         </div>
+      </div>
+
+      {/* Community info */}
+      <div className="hidden lg:block">
+        <CommunityInfo
+          communityName={post.community.name}
+          isSinglePost={true}
+        />
       </div>
     </div>
   );

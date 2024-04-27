@@ -4,33 +4,17 @@ import ModeratorItem from "./moderator-item";
 interface props {
   moderators: {
     createdDate: Date;
-    User: Pick<User, "name" | "image" | "username"> & {
-      _count: {
-        Post: number;
-        Vote: number;
-        Comment: number;
-        CommentVote: number;
-      };
-    };
+    user: Pick<User, "name" | "image" | "username">;
   }[];
+  isPermission: boolean
 }
 
-const CommunityModerators = ({ moderators }: props) => {
+const CommunityModerators = ({ moderators, isPermission }: props) => {
   return (
-    <div className="space-y-3 mt-3">
+    <div className="mt-3 space-y-3">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
         {moderators.map((mod) => {
-          const pInteract = mod.User._count.Post + mod.User._count.Vote;
-          const cmInteract =
-            mod.User._count.Comment + mod.User._count.CommentVote;
-
-          return (
-            <ModeratorItem
-              mod={mod}
-              postCount={pInteract}
-              commentCount={cmInteract}
-            />
-          );
+          return <ModeratorItem key={mod.user.username}  mod={mod} showTime={isPermission}/>;
         })}
       </div>
     </div>

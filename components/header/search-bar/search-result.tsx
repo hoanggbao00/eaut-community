@@ -1,4 +1,5 @@
 import { EarthIcon, FilePen } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 interface SearchResultProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -12,20 +13,36 @@ const SearchResult: React.FC<SearchResultProps> = ({ heading, data }) => {
   return (
     data && (
       <div className="">
-        <p className="text-sm font-medium text-gray-500">
+        <p className="text-sm font-medium">
           {heading} — <span className="text-xs">{data.length} results</span>
         </p>
         <div className="mt-1 space-y-2">
           {data.map((item) => (
             <Link
               href={`/c/${item.name || item.community?.name}${
-                type === "post" ? "/post/" + item.id : ''
+                type === "post" ? "/post/" + item.id : ""
               }`}
               key={item.id}
               className="flex items-center gap-2 rounded-md p-2 transition-colors hover:bg-foreground/20"
             >
-              {type === "community" ? <EarthIcon /> : <FilePen />}
-              <p>{type === "community" ? `c/${item.name}` : `${item.title}`}</p>
+              {type === "community" && (
+                <Image
+                  src={item.image}
+                  width={24}
+                  height={24}
+                  alt={item.name}
+                />
+              )}
+              <p>
+                {type === "community" ? (
+                  `c/${item.name}`
+                ) : (
+                  <>
+                    <b>{`c/${item.community.name} • `}</b>
+                    {item.title}{" "}
+                  </>
+                )}
+              </p>
             </Link>
           ))}
         </div>

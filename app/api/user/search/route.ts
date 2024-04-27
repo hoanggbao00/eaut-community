@@ -46,13 +46,13 @@ export async function GET(req: NextRequest) {
         name: true,
         username: true,
         image: true,
-        isBanned: true,
+        isDeleted: true,
         communityModerator: {
           select: {
             communityId: true,
           },
         },
-        Follow: {
+        follow: {
           select: {
             communityId: true,
             createdDate: true,
@@ -60,8 +60,8 @@ export async function GET(req: NextRequest) {
         },
         _count: {
           select: {
-            Post: true,
-            Comment: true,
+            post: true,
+            comment: true,
           },
         },
       },

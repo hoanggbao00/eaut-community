@@ -1,6 +1,6 @@
 "use client";
 import { compressImage } from "@/lib/utils";
-import { ShowAvatar } from "../show-avatar";
+import { ShowAvatar } from "../shared/show-avatar";
 import { Image, X } from "lucide-react";
 
 interface props {
@@ -41,7 +41,7 @@ const ChangeProfileImage = ({ initImage, userName, image }: props) => {
         htmlFor="avatar"
         className="absolute inset-0 z-10 grid cursor-pointer place-content-center rounded-full bg-foreground/20 text-muted-foreground"
       >
-        {!image.file && <Image size="16" />}
+        {!image.file ? <Image size="16" /> : null}
       </label>
       {image.file && (
         <X

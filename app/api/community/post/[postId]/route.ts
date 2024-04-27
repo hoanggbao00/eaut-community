@@ -1,28 +1,133 @@
 import { getAuthSession } from "@/lib/auth";
-import { STATUS_CODE } from "@/lib/constants";
+import { API_RESPONSES, STATUS_CODE } from "@/lib/constants";
+import { isAdmin, isCreator, isModerator } from "@/lib/db/db";
 import prisma from "@/lib/db/prisma";
-import { UserRole } from "@prisma/client";
+import { Entity, UserRole } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
+//DELETE, PUT: /api/community/post/[postId]
+
+/**
+ * delete post
+ * @returns
+ */
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { postId: string } },
 ) {
-  const session = await getAuthSession();
-  if (!session)
-    return NextResponse.json("Unauthorized", {
-      status: STATUS_CODE.UNAUTHORIZED,
-    });
-
   try {
+    // Check if user signed in
+    const session = await getAuthSession();
+
+    if (!session?.user)
+      return NextResponse.json(API_RESPONSES[STATUS_CODE.UNAUTHORIZED], {
+        status: STATUS_CODE.UNAUTHORIZED,
+      });
+
+    const { id: userId, role } = session.user;
+
+    // check if exists post
     const existsPost = await prisma.post.findFirst({
       where: {
         id: params.postId,
       },
       select: {
+        communityId: true,
+        title: true,
         authorId: true,
+        notifierIds: true,
         community: {
           select: {
+            creatorId: true,
+            name: true,
+            moderators: {
+              select: {
+                userId: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!existsPost)
+      return NextResponse.json(API_RESPONSES[STATUS_CODE.NOT_FOUND], {
+        status: STATUS_CODE.NOT_FOUND,
+      });
+
+    // check user has permission
+    if (
+      !isAdmin(role) &&
+      !isCreator(userId, existsPost.authorId) &&
+      !isCreator(userId, existsPost.community.creatorId!) &&
+      !isModerator(userId, existsPost.community.moderators)
+    ) {
+      return NextResponse.json(API_RESPONSES[STATUS_CODE.NOT_ALLOWED], {
+        status: STATUS_CODE.NOT_ALLOWED,
+      });
+    }
+
+    await prisma.post.delete({
+      where: {
+        id: params.postId,
+      },
+    });
+
+    // if not author delete so send notification to author
+    if (!isCreator(userId, existsPost.authorId)) {
+      await prisma.notification.create({
+        data: {
+          type: Entity.COMMUNITY,
+          senderId: userId,
+          notifierId: existsPost.authorId,
+          entityId: existsPost.communityId,
+          message: `has deleted your post "${existsPost.title}" in`,
+          communityName: existsPost.community.name,
+        },
+      });
+    }
+
+    return NextResponse.json("Post Deleted", { status: STATUS_CODE.OK });
+  } catch (error) {
+    console.log(error);
+
+    return NextResponse.json("Something went wrong", { status: 500 });
+  }
+}
+
+// Update post
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { postId: string } },
+) {
+  try {
+    // Check if user signed in
+    const session = await getAuthSession();
+
+    if (!session?.user)
+      return NextResponse.json(API_RESPONSES[STATUS_CODE.UNAUTHORIZED], {
+        status: STATUS_CODE.UNAUTHORIZED,
+      });
+
+    const { id: userId, role } = session.user;
+
+    const body = await req.json();
+
+    // check if exists post
+    const existsPost = await prisma.post.findFirst({
+      where: {
+        id: params.postId,
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        authorId: true,
+        notifierIds: true,
+        community: {
+          select: {
+            name: true,
+            creatorId: true,
             moderators: {
               where: {
                 userId: session.user.id,
@@ -33,93 +138,75 @@ export async function DELETE(
       },
     });
 
-    //check if post exists
     if (!existsPost)
-      return NextResponse.json("NOT_FOUND", { status: STATUS_CODE.REJECTED });
-
-    const permission =
-      Boolean(existsPost.community.moderators.length > 0) ||
-      session.user.role === UserRole.ADMIN ||
-      existsPost.authorId === session.user.id;
-
-    // check if is author, is moderator, is admin
-    if (!permission)
-      return NextResponse.json("You are not the author of this post", {
-        status: STATUS_CODE.NOT_ALLOWED,
+      return NextResponse.json(API_RESPONSES[STATUS_CODE.NOT_FOUND], {
+        status: STATUS_CODE.NOT_FOUND,
       });
 
-    await prisma.post.delete({
-      where: {
-        id: params.postId,
-      },
-    });
+    // check if is author, is moderator, is admin
+    if (
+      !isAdmin(role) &&
+      !isCreator(userId, existsPost.authorId) &&
+      !isCreator(userId, existsPost.community.creatorId!) &&
+      !isModerator(userId, existsPost.community.moderators)
+    ) {
+      return NextResponse.json(API_RESPONSES[STATUS_CODE.NOT_ALLOWED], {
+        status: STATUS_CODE.NOT_ALLOWED,
+      });
+    }
 
-    return NextResponse.json("Deleted", { status: STATUS_CODE.ACCEPTED });
-  } catch (error) {
-    console.log(error);
+    const oldContent = {
+      ...(existsPost.title && { title: existsPost.title }),
+      ...(existsPost.content && { content: existsPost.content }),
+    };
 
-    return NextResponse.json("Something went wrong", { status: 500 });
-  }
-}
-
-//TODO: do this
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { postId: string } },
-) {
-  const session = await getAuthSession();
-  if (!session)
-    return NextResponse.json("Unauthorized", {
-      status: STATUS_CODE.UNAUTHORIZED,
-    });
-
-  const body = await req.json();
-
-  const existsPost = await prisma.post.findFirst({
-    where: {
-      id: params.postId,
-    },
-    select: {
-      authorId: true,
-      community: {
-        select: {
-          moderators: {
-            where: {
-              userId: session.user.id,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  //check if post exists
-  if (!existsPost)
-    return NextResponse.json("NOT_FOUND", { status: STATUS_CODE.REJECTED });
-
-  const permission =
-    Boolean(existsPost.community.moderators.length > 0) ||
-    session.user.role === UserRole.ADMIN ||
-    existsPost.authorId === session.user.id;
-
-  // check if is author, is moderator, is admin
-  if (!permission)
-    return NextResponse.json("You are not have permission to this post", {
-      status: STATUS_CODE.NOT_ALLOWED,
-    });
-
-  try {
     await prisma.post.update({
       where: {
         id: params.postId,
       },
       data: {
         ...body,
-        updatedByUsername: session.user.username
+        updateHistory: {
+          create: {
+            approvedBy: session.user.username!,
+            updatedBy: session.user.username!,
+            oldContent: oldContent,
+            newContent: { ...body },
+            type: Entity.POST,
+          },
+        },
       },
     });
 
-    return NextResponse.json("Updated", { status: STATUS_CODE.ACCEPTED });
+    // send notification to author if other edit it
+    if (!isCreator(userId, existsPost.authorId)) {
+      await prisma.notification.create({
+        data: {
+          type: Entity.POST,
+          senderId: userId,
+          entityId: existsPost.id,
+          message: `your post you follow has updated`,
+          notifierId: existsPost.authorId,
+          communityName: existsPost.community.name,
+        },
+      });
+    }
+
+    // send notification to user follow this post
+    if (existsPost.notifierIds.length > 0) {
+      await prisma.notification.createMany({
+        data: existsPost.notifierIds.map((id) => ({
+          type: Entity.POST,
+          senderId: userId,
+          entityId: existsPost.id,
+          message: `your post you follow has updated`,
+          notifierId: id,
+          communityName: existsPost.community.name,
+        })),
+      });
+    }
+
+    return NextResponse.json("Post Updated", { status: STATUS_CODE.OK });
   } catch (error) {
     console.log(error);
 

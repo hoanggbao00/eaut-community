@@ -27,6 +27,7 @@ export const Icons = {
   user: User,
 
   getIcon: (icon: string, className?: string): React.ReactNode => {
+    console.log(icon);
     switch (icon) {
       case "chill":
         return <FerrisWheel className={cn(className)}/>;

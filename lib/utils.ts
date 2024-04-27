@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { formatDistanceToNowStrict } from "date-fns";
-import locale from "date-fns/locale/en-US";
+import { enUS } from "date-fns/locale";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "./firebaseConfig";
 
@@ -56,10 +56,7 @@ export function formatDate(date: string, showTime?: boolean) {
 export function formatTimeToNow(date: Date): string {
   return formatDistanceToNowStrict(date, {
     addSuffix: true,
-    locale: {
-      ...locale,
-      formatDistance,
-    },
+    locale: { formatDistance },
   });
 }
 
@@ -104,5 +101,24 @@ export const uploadImage = async (item: File) => {
     return imageUrl;
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const checkYoutubeUrl = (url: string) => {
+  const regex =
+    /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|live\/|v\/)?)([\w\-]+)(\S+)?$/;
+  const isValid = regex.test(url);
+
+  return isValid;
+};
+
+export const getYoutubeId = (url: string) => {
+  const [a, , b] = url
+    .replace(/(>|<)/gi, "")
+    .split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+  if (b !== undefined) {
+    return b.split(/[^0-9a-z_-]/i)[0];
+  } else {
+    return a;
   }
 };

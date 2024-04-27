@@ -40,7 +40,7 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
     }
   };
 
-  const debouncedHandleSearch = useCallback(useDebouncedCallback(handleSearch, 1000), []);
+  const debouncedHandleSearch = useCallback(useDebouncedCallback(handleSearch, 1000), [input]);
 
   return (
     <div className="relative z-50 w-3/4 overflow-visible rounded-lg border md:w-2/3 lg:w-1/2">
@@ -65,7 +65,7 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
       )}
 
       {input && (
-        <div className="absolute inset-x-0 top-[120%] rounded-b-md bg-white p-2 shadow">
+        <div className="absolute inset-x-0 top-[120%] rounded-b-md bg-muted p-2 shadow">
           {isLoading && <div>Searching...</div>}
           {communityData && !isLoading && (
             <SearchResult

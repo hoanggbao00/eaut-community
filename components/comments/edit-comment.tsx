@@ -28,13 +28,10 @@ const EditComment: React.FC<EditCommentProps> = ({
 
   const handleSubmit = async () => {
     setLoading(true);
-    const payload = { text: editContent };
+    const payload = { oldContent: oldComment, content: editContent };
 
     try {
-      const edited = await axios.put(
-        `/api/community/post/comment/${commentId}`,
-        payload,
-      );
+      await axios.put(`/api/community/post/comment/${commentId}`, payload);
 
       toast({
         title: "Comment updated successfully",

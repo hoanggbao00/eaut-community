@@ -28,11 +28,11 @@ const extensions = [...defaultExtensions, slashCommand];
 const NovelEditor = ({
   className,
   onChange,
-  initContent
+  initContent,
 }: {
   className?: string;
   onChange: (...e: any[]) => void;
-  initContent?: JSONContent
+  initContent?: JSONContent;
 }) => {
   const [initialContent, setInitialContent] = useState<null | JSONContent>(
     null,
@@ -72,7 +72,7 @@ const NovelEditor = ({
           initialContent={initContent || initialContent}
           extensions={extensions}
           className={cn(
-            "relative max-h-[50dvh] min-h-[100px] w-full max-w-full overflow-auto rounded-lg border border-muted bg-background shadow-lg",
+            "relative min-h-[100px] w-full max-w-full rounded-lg border border-muted bg-background shadow-lg",
             className,
           )}
           editorProps={{
@@ -80,7 +80,7 @@ const NovelEditor = ({
               keydown: (_view, event) => handleCommandNavigation(event),
             },
             attributes: {
-              class: `prose prose-lg dark:prose-invert prose-headings:font-title font-default focus:outline-none max-w-full p-6 px-8`,
+              class: `prose prose-lg dark:prose-invert prose-headings:font-title max-h-[50dvh] overflow-auto font-default focus:outline-none max-w-full p-6 px-8`,
             },
           }}
           onUpdate={({ editor }) => {

@@ -38,9 +38,6 @@ const nextConfig = {
 				hostname: 'styles.redditmedia.com',
 			},
 			{
-				hostname: 'krkztdl9g4rhvs2w.public.blob.vercel-storage.com',
-			},
-			{
 				hostname: 'firebasestorage.googleapis.com',
 			},
 		],

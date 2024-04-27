@@ -1,18 +1,23 @@
-import { STATUS_CODE } from "@/lib/constants";
+import { API_RESPONSES, STATUS_CODE } from "@/lib/constants";
 import { getAuthSession } from "@/lib/auth";
 import prisma from "@/lib/db/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-import { UserRole } from "@prisma/client";
+import { isAdmin, isCreator, isModerator } from "@/lib/db/db";
 
-// Create Community
+// POST, PUT: /api/community
+
+/**
+ * Request to create a new community
+ * @body {name:communityName}
+ * @returns
+ */
 export async function POST(req: NextRequest) {
   try {
     // Check if user signed in
     const session = await getAuthSession();
 
     if (!session?.user)
-      return NextResponse.json("Unauthorized", {
+      return NextResponse.json(API_RESPONSES[STATUS_CODE.UNAUTHORIZED], {
         status: STATUS_CODE.UNAUTHORIZED,
       });
 
@@ -34,45 +39,80 @@ export async function POST(req: NextRequest) {
     // Create community
     const community = await prisma.community.create({
       data: {
-        ...body,
+        notifierIds: [session.user.id],
         creatorId: session.user.id,
-        notificationUserIdAccess: [session.user.id],
-      },
-    });
-
-    // Then follow this community
-    await prisma.follow.create({
-      data: {
-        userId: session.user.id,
-        communityId: community.id,
+        name: body.name,
+        ...body,
+        followers: {
+          create: {
+            userId: session.user.id,
+          },
+        },
       },
     });
 
     // Then send request to Admin
-    await prisma.requestCommunity.create({
+    await prisma.request.create({
       data: {
-        userId: session.user.id,
+        requestType: "CREATE",
+        requestFor: "COMMUNITY",
         communityId: community.id,
-        type: "CREATE",
+        communityName: body.name,
+        senderId: session.user.id,
+        sendTo: "ADMIN",
+        detail: "request to create community",
+        status: "PENDING",
       },
     });
 
-    return NextResponse.json(community.name);
+    const adminIds = await prisma.user.findMany({
+      where: {
+        role: "ADMIN",
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (adminIds.length > 0) {
+      await prisma.notification.createMany({
+        data: adminIds.map((user) => ({
+          entityId: community.id,
+          message: "request to create community",
+          senderId: session.user.id,
+          type: "REQUEST",
+          notifierId: user.id,
+          communityName: community.name,
+        })),
+      });
+    }
+
+    return NextResponse.json(API_RESPONSES[STATUS_CODE.OK], {
+      status: STATUS_CODE.OK,
+    });
   } catch (error) {
-    return NextResponse.json("Could not create community", { status: 500 });
+    return NextResponse.json(API_RESPONSES[STATUS_CODE.SERVER_ERROR], {
+      status: STATUS_CODE.SERVER_ERROR,
+    });
   }
 }
 
-//Update
+/**
+ * Update community
+ * @body {name: communityName, ...other community data}
+ * @returns
+ */
 export async function PUT(req: NextRequest) {
   try {
     // Check if user signed in
     const session = await getAuthSession();
 
     if (!session?.user)
-      return NextResponse.json("Unauthorized", {
+      return NextResponse.json("Unauthenticated", {
         status: STATUS_CODE.UNAUTHORIZED,
       });
+
+    const { id: userId, role } = session.user;
 
     // Get body data
     const body = await req.json();
@@ -80,63 +120,99 @@ export async function PUT(req: NextRequest) {
     // Check if community exist
     const isExists = await prisma.community.findFirst({
       where: { name: body.name },
+      select: {
+        name: true,
+        id: true,
+        creatorId: true,
+        moderators: {
+          select: {
+            userId: true,
+          },
+        },
+      },
     });
 
     if (!isExists)
       return NextResponse.json("Community doesn't exist", {
-        status: STATUS_CODE.REJECTED,
+        status: STATUS_CODE.NOT_FOUND,
       });
+    // Check permission
 
-    // Check if user is Admin or is creator
     if (
-      session.user.role !== UserRole.ADMIN ||
-      session.user.id !== isExists.creatorId
+      !isAdmin(role) &&
+      !isCreator(userId, isExists.creatorId!) &&
+      !isModerator(userId, isExists.moderators)
     ) {
-      return NextResponse.json("You're not have permission to do this action", {
+      return NextResponse.json("You're not have permission!", {
         status: STATUS_CODE.NOT_ALLOWED,
       });
     }
 
     // Send request to Admin
-    await prisma.requestCommunity.create({
+    await prisma.request.create({
       data: {
-        userId: session.user.id,
+        senderId: userId,
+        sendTo: "ADMIN",
+        requestType: "UPDATE",
+        requestFor: "COMMUNITY", //
         communityId: isExists.id,
-        type: "UPDATE",
-        newContent: { ...body, updateByUsername: session.user.username },
+        communityName: isExists.name,
+        detail: "request to update community",
+        newContent: { ...body },
+        status: "PENDING",
       },
     });
 
-    return NextResponse.json("OK", { status: STATUS_CODE.ACCEPTED });
+    const adminIds = await prisma.user.findMany({
+      where: {
+        role: "ADMIN",
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (adminIds.length > 0) {
+      await prisma.notification.createMany({
+        data: adminIds.map((user) => ({
+          entityId: isExists.id,
+          message: "request to update community",
+          senderId: session.user.id,
+          type: "REQUEST",
+          notifierId: user.id,
+          communityName: isExists.name,
+        })),
+      });
+    }
+
+    return NextResponse.json("Request sent to Admin!", {
+      status: STATUS_CODE.OK,
+    });
   } catch (error) {
-    return NextResponse.json("Could not update community", { status: 500 });
+    return NextResponse.json(API_RESPONSES[STATUS_CODE.SERVER_ERROR], {
+      status: STATUS_CODE.SERVER_ERROR,
+    });
   }
 }
 
-//* Temporary
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-
   try {
-    const { userId } = z
-      .object({
-        userId: z.string(),
-      })
-      .parse({
-        userId: searchParams.get("userId"),
-      });
+    const { searchParams } = new URL(req.url);
+    const communityId = searchParams.get("communityId");
+    if (!communityId)
+      return NextResponse.json("Not Found", { status: STATUS_CODE.NOT_FOUND });
 
-    const followedCommunities = await prisma.follow.findMany({
+    const community = await prisma.community.findFirst({
       where: {
-        userId: userId,
-      },
-      include: {
-        community: true,
+        id: communityId,
       },
     });
 
-    return NextResponse.json(followedCommunities);
+    return NextResponse.json(community);
   } catch (error) {
-    return NextResponse.json("Could not get community", { status: 500 });
+    console.log(error);
+    return NextResponse.json(API_RESPONSES[STATUS_CODE.SERVER_ERROR], {
+      status: STATUS_CODE.SERVER_ERROR,
+    });
   }
 }

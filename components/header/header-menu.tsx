@@ -1,4 +1,4 @@
-import { ChevronDown, HomeIcon, Menu } from "lucide-react";
+import { AreaChart, ChevronDown, HomeIcon, Menu } from "lucide-react";
 import MenuItem from "./menu-item";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -26,8 +26,8 @@ const HeaderMenu: React.FC<Props> = async ({
       </label>
       <input type="checkbox" className="peer sr-only" id="header-menu" />
       <aside className="fixed inset-0 top-[3.7rem] flex h-full w-0 flex-col gap-2 overflow-hidden overflow-y-auto dark:border-r bg-background shadow-lg transition-all peer-checked:w-64 peer-checked:p-4 xl:w-64 xl:p-4">
-        <MenuItem icon={<HomeIcon />} text="Home" href="/feed" />
-        <MenuItem icon={<HomeIcon />} text="Popular" href="/" />
+        <MenuItem icon={<HomeIcon color="dodgerblue"/>} text="Home" href="/feed" />
+        <MenuItem icon={<AreaChart color="dodgerblue"/>} text="Popular" href="/" />
         <Separator className="my-1" />
         {followedCommunities && (
           <Collapsible defaultOpen>
@@ -45,6 +45,7 @@ const HeaderMenu: React.FC<Props> = async ({
                     href={`/c/${c.community.name.toLowerCase()}`}
                     iconHref={c.community.image}
                     className="px-0"
+                    status={c.community.isAccessible}
                   />
                 </CollapsibleContent>
               ))}

@@ -9,10 +9,9 @@ const Homepage = async () => {
   const session = await getAuthSession();
   const community = await prisma.community.findMany({
     where: {
-      AND: [
-        { NOT: { status: "PENDING" } },
-        { NOT: { status: "REJECTED" } },
-      ],
+      NOT: {
+        isAccessible: false,
+      },
     },
     orderBy: {
       posts: {
@@ -24,7 +23,7 @@ const Homepage = async () => {
       _count: {
         select: {
           posts: true,
-          follows: true,
+          followers: true,
         },
       },
     },
@@ -40,24 +39,25 @@ const Homepage = async () => {
         </div>
 
         {/* ranking */}
-        <div className="hidden h-fit w-full rounded-lg border md:block md:w-64 lg:w-72">
+        <div className="hidden h-fit w-full overflow-hidden rounded-lg border md:block md:w-64 lg:w-72">
           <div className="bg-emerald-100 px-6">
-            <p className="flex items-center gap-1.5 py-3 font-semibold">
+            <p className="flex items-center gap-1.5 py-3 font-semibold text-gray-500">
               <EarthIcon className="h-4 w-4" />
               Popular Community
             </p>
           </div>
           <div className="space-y-2 p-2">
             {community
-              .sort((a, b) => b._count.follows - a._count.follows)
+              .sort((a, b) => b._count.followers - a._count.followers)
               .map((c) => (
                 <Link
+                  key={c.id}
                   href={`c/${c.name.toLowerCase()}`}
-                  className="flex items-center justify-between rounded-sm p-2 hover:bg-black/10"
+                  className="flex items-center justify-between rounded-sm p-2 hover:bg-foreground/10"
                 >
                   <p>c/{c.name}</p>
-                  <span className="flex items-center text-gray-500">
-                    {c._count.follows} <User className="h-4 w-4" />
+                  <span className="flex items-center text-muted-foreground">
+                    {c._count.followers} <User className="h-4 w-4" />
                   </span>
                 </Link>
               ))}

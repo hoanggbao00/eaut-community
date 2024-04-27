@@ -1,7 +1,7 @@
 "use client";
 import { Comment, CommentVote, Post } from "@prisma/client";
 import Link from "next/link";
-import { ShowAvatar } from "../show-avatar";
+import { ShowAvatar } from "../shared/show-avatar";
 import { useSession } from "next-auth/react";
 import PostVoteClient from "@/components/post/vote/post-vote-client";
 import { formatTimeToNow } from "@/lib/utils";
@@ -38,28 +38,30 @@ const UserCommentFeed: React.FC<Props> = ({ comments, userName }) => {
           return (
             <Link
               href={`/c/${comment.post.community.name}/post/${comment.postId}`}
-              className="flex flex-col gap-3 rounded-sm p-1 py-4 text-sm hover:bg-foreground/10"
+              className="flex flex-col gap-3 rounded-md border p-1 py-3 text-sm hover:bg-foreground/10"
               key={comment.postId}
             >
               <div className="flex items-center gap-2">
                 <ShowAvatar
+                  className="size-6"
                   data={{
                     name: comment.post.community.name,
                     image: comment.post.community.image,
                   }}
                 />
                 <p className="font-medium">r/{comment.post.community.name}</p>
-                <p>• {comment.post.title}</p>
+                <span>•</span>
+                <p className="font-semibold">{comment.post.title}</p>
               </div>
               <div className="space-y-3">
-                <p>
-                  <b>{userName}</b>{" "}
-                  {comment.replyToId ? "replied" : "commented"}
-                  <span className="text-muted--foreground ml-2">
+                <p className="space-x-2">
+                  <b>{userName}</b>
+                  <span className="text-xs text-muted-foreground">
+                    {comment.replyToId ? "replied" : "commented"}
                     {formatTimeToNow(new Date(comment.createdAt))}
                   </span>
                 </p>
-                <p>{comment.text}</p>
+                <p>{`"${comment.content}"`}</p>
               </div>
               <div className="w-fit">
                 <PostVoteClient

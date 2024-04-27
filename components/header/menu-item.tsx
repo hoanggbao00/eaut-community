@@ -1,21 +1,24 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { Badge } from "../ui/badge";
 
 interface MenuItemProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   icon?: React.ReactNode;
   iconHref?: string | null;
   text: string;
-  href: string;
+  href?: string;
   className?: string;
+  status?: boolean;
 }
 
 const MenuItem: React.FC<MenuItemProps> = ({
   icon,
   iconHref,
   text,
-  href,
+  href = "#",
   className,
+  status,
   ...props
 }) => {
   return (
@@ -28,22 +31,24 @@ const MenuItem: React.FC<MenuItemProps> = ({
       {...props}
     >
       <div
-        className={cn("relative mr-1 h-[30px] w-[30px]", {
+        className={cn("mr-1", {
           "flex items-center": icon,
         })}
       >
         {iconHref && (
-          <Image
-            src={iconHref}
-            alt={'img'}
-            fill
-            className="rounded-full object-cover"
-          />
+          <Image src={`${iconHref}.svg`} alt={"img"} width={24} height={24} />
         )}
         {icon && icon}
       </div>
 
-      <span>{text}</span>
+      <div>
+        <p>{text}</p>
+        {status === false && (
+          <Badge className="bg-yellow-200 text-yellow-900 hover:bg-yellow-300/80">
+            Pending Reviews
+          </Badge>
+        )}
+      </div>
     </Link>
   );
 };

@@ -21,8 +21,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import TextareaAutoSize from "react-textarea-autosize";
-import { storage } from "@/lib/firebaseConfig";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { toast } from "@/hooks/use-toast";
 import { Loader2, MinusCircle } from "lucide-react";
 import axios, { AxiosError } from "axios";
@@ -67,7 +65,7 @@ const CreateForm = ({
           description: "",
           cover: null,
           image: null,
-          rules: [],
+          rules: [{ title: "", detail: "" }],
         },
     mode: "onChange",
   });
@@ -77,27 +75,45 @@ const CreateForm = ({
     control: form.control,
   });
 
-  const onSubmit = async ({
+  async function onSubmit({
     name,
     description,
     categoryId,
     rules,
-  }: CreateCommunityPayload) => {
+  }: CreateCommunityPayload) {
     setLoading(true);
     try {
       const coverUrl = cover && (await uploadImage(cover));
       const imageUrl = image && (await uploadImage(image));
 
+      const cName = !community && name;
+      const desc = !community
+        ? description
+        : community.description !== description && description;
+      const cat = !community
+        ? categoryId
+        : community.categoryId !== categoryId && categoryId;
+      const cRules = !community
+        ? rules
+        : JSON.stringify(community.rules) !== JSON.stringify(rules) && rules;
+
       const payload = {
-        name,
-        description,
+        ...(cName && { name: cName }),
+        ...(desc && { description: desc }),
         ...(cover && { cover: coverUrl }),
         ...(image && { image: imageUrl }),
-        categoryId,
-        rules,
+        ...(cat && { categoryId: cat }),
+        ...(cRules && { rules: cRules }),
       };
 
-      await axios.post("/api/community", payload);
+      if (Object.keys(payload).length === 0)
+        return toast({
+          title: "Nothing change",
+          variant: "warning",
+        });
+
+      if (community) await axios.put("/api/community", payload);
+      else await axios.post("/api/community", payload);
 
       toast({
         title: `Request to ${
@@ -132,7 +148,7 @@ const CreateForm = ({
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   return (
     <div className="space-y-6 pb-6">

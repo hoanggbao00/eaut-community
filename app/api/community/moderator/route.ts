@@ -1,15 +1,24 @@
-import { STATUS_CODE } from "@/lib/constants";
+import { API_RESPONSES, STATUS_CODE } from "@/lib/constants";
 import { getAuthSession } from "@/lib/auth";
 import prisma from "@/lib/db/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { isAdmin, isCreator } from "@/lib/db/db";
+import { Entity } from "@prisma/client";
 
-export async function POST(req: NextRequest) {
+//POST: /api/community/moderator
+
+/**
+ * Add ad moderator to community
+ * @body {communityId: communityId, userIds: listIdsOfUser[]}
+ * @returns
+ */
+export async function PUT(req: NextRequest) {
   try {
     // Check if user signed in
     const session = await getAuthSession();
 
     if (!session?.user)
-      return NextResponse.json("Unauthorized", {
+      return NextResponse.json(API_RESPONSES[STATUS_CODE.UNAUTHORIZED], {
         status: STATUS_CODE.UNAUTHORIZED,
       });
 
@@ -18,97 +27,117 @@ export async function POST(req: NextRequest) {
     const ids = body.userIds as string[];
     const communityId = body.communityId;
 
-    // Check if community name already exists
+    // Check if community exists
     const communityExists = await prisma.community.findFirst({
       where: {
         id: communityId,
+      },
+      include: {
+        moderators: {
+          select: {
+            userId: true,
+          },
+        },
       },
     });
 
     if (!communityExists)
       return NextResponse.json("Community not found", {
-        status: STATUS_CODE.REJECTED,
+        status: STATUS_CODE.NOT_FOUND,
       });
 
-    // check if user is creator or admin
+    // check if user has permission to do this action
     if (
-      communityExists.creatorId !== session.user.id &&
-      session.user.role !== "ADMIN"
+      !isAdmin(session.user.role) &&
+      !isCreator(session.user.id, communityExists.creatorId!)
     )
-      return NextResponse.json("No_PERMISSIONS", {
+      return NextResponse.json("You don't have permission to do this action!", {
         status: STATUS_CODE.NOT_ALLOWED,
       });
 
-    // ready for insert data
-    const payload = ids.map((id) => ({ userId: id, communityId: communityId }));
+    if (ids.length === 0) {
+      await prisma.community.update({
+        where: {
+          id: communityId,
+        },
+        data: {
+          moderators: {
+            deleteMany: {},
+          },
+        },
+      });
 
-    // Create moderator
+      await prisma.notification.create({
+        data: {
+          type: Entity.COMMUNITY,
+          senderId: session.user.id,
+          notifierId: communityExists.moderators[0].userId,
+          entityId: communityId,
+          message: "remove your moderator role in",
+          communityName: communityExists.name,
+        },
+      });
+      return NextResponse.json("Moderators deleted", {
+        status: STATUS_CODE.OK,
+      });
+    }
+
+    // check if moderator is removed someone
+    const removed = communityExists.moderators.filter(
+      (mod) => !ids.find((id) => mod.userId === id),
+    );
+    const added = ids.filter(
+      (id) => !communityExists.moderators.find((mod) => mod.userId === id),
+    );
+
+    // Remove moderator
+    if (removed.length > 0) {
+      await prisma.communityModerator.deleteMany({
+        where: {
+          communityId: communityId,
+          userId: {
+            in: removed.map((mod) => mod.userId),
+          },
+        },
+      });
+      await prisma.notification.createMany({
+        data: removed.map((user) => ({
+          type: Entity.COMMUNITY,
+          senderId: session.user.id,
+          notifierId: user.userId,
+          entityId: communityId,
+          message: "remove your moderator role in",
+          communityName: communityExists.name,
+        })),
+      });
+    }
+
+    // add moderator
     await prisma.communityModerator.createMany({
-      data: [...payload],
-    });
-
-    return NextResponse.json("OK");
-  } catch (error) {
-    return NextResponse.json("Could not update moderators", { status: 500 });
-  }
-}
-
-export async function DELETE(req: NextRequest) {
-  try {
-    // Check if user signed in
-    const session = await getAuthSession();
-
-    if (!session?.user)
-      return NextResponse.json("Unauthorized", {
-        status: STATUS_CODE.UNAUTHORIZED,
-      });
-
-    // Get body data
-    const body = await req.json();
-    const communityId = body.communityId;
-
-    // Check if community name already exists
-    const communityExists = await prisma.community.findFirst({
-      where: {
-        id: communityId,
-      },
-    });
-
-    if (!communityExists)
-      return NextResponse.json("Community not found", {
-        status: STATUS_CODE.REJECTED,
-      });
-
-    // check if user is creator or admin
-    if (
-      communityExists.creatorId !== session.user.id &&
-      session.user.role !== "ADMIN"
-    )
-      return NextResponse.json("No_PERMISSIONS", {
-        status: STATUS_CODE.NOT_ALLOWED,
-      });
-
-    // Find ids of moderator request
-    const moderators = await prisma.communityModerator.findMany({
-      where: {
+      data: added.map((id) => ({
         communityId: communityId,
-      },
-      select: {
-        id: true
-      }
-    })
+        userId: id,
+      })),
+    });
 
-    // then delete it
-    await prisma.communityModerator.deleteMany({
-      where: {
-        id: {
-          in: moderators.map((mod) => mod.id)
-        }
-      }
-    })
+    // send notification to user
+    await prisma.notification.createMany({
+      data: added.map((id) => ({
+        type: Entity.COMMUNITY,
+        senderId: session.user.id,
+        notifierId: id,
+        entityId: communityId,
+        message: "added you as moderator in",
+        communityName: communityExists.name,
+      })),
+    });
 
-    return NextResponse.json("OK");
+    return NextResponse.json({
+      message: "Successfully updated moderators",
+    });
   } catch (error) {
-    return NextResponse.json("Could not update moderators", { status: 500 });
+    return NextResponse.json(API_RESPONSES[STATUS_CODE.SERVER_ERROR], {
+      status: STATUS_CODE.SERVER_ERROR,
+    });
   }
 }

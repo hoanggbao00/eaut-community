@@ -1,46 +1,88 @@
-import { getAuthSession } from '@/lib/auth';
-import prisma from '@/lib/db/prisma';
-import { CommunityFollowValidator } from '@/lib/validators/community';
-import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
+import { getAuthSession } from "@/lib/auth";
+import { API_RESPONSES, STATUS_CODE } from "@/lib/constants";
+import prisma from "@/lib/db/prisma";
+import { Entity } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
 
+// POST: /api/community/follow
+
+/**
+ * Follow a community
+ * @body {communityId: communityId}
+ * @returns
+ */
 export async function POST(req: NextRequest) {
-	try {
-		const session = await getAuthSession();
+  try {
+    // Check if user signed in
+    const session = await getAuthSession();
 
-		if (!session?.user)
-			return NextResponse.json('Unauthorized', { status: 401 });
+    if (!session?.user)
+      return NextResponse.json(API_RESPONSES[STATUS_CODE.UNAUTHORIZED], {
+        status: STATUS_CODE.UNAUTHORIZED,
+      });
 
-		const body = await req.json();
+    // Get body data
+    const body = await req.json();
+    const { communityId } = body;
 
-		const { communityId } = CommunityFollowValidator.parse(body);
+    // Check if user already followed this community
+    const followExists = await prisma.follow.findFirst({
+      where: {
+        communityId,
+        userId: session.user.id,
+      },
+    });
 
-		const followExists = await prisma.follow.findFirst({
-			where: {
-				communityId,
-				userId: session.user.id,
-			},
-		});
+    if (followExists)
+      return NextResponse.json("You already followed this community!", {
+        status: STATUS_CODE.BAD_REQUEST,
+      });
 
-		if (followExists)
-			return NextResponse.json('You are already following this community', {
-				status: 400,
-			});
+    // Create new follower
+    const follow = await prisma.follow.create({
+      data: {
+        communityId,
+        userId: session.user.id,
+      },
+      include: {
+        community: {
+          select: {
+            creatorId: true,
+            name: true,
+            notifierIds: true,
+          },
+        },
+      },
+    });
 
-		await prisma.follow.create({
-			data: {
-				communityId,
-				userId: session.user.id,
-			},
-		});
+    // Add user to get notification of community
+    await prisma.community.update({
+      where: {
+        id: communityId,
+      },
+      data: {
+        notifierIds: [...follow.community.notifierIds, session.user.id],
+      },
+    });
 
-		return NextResponse.json(communityId);
-	} catch (error) {
-		if (error instanceof z.ZodError) {
-			return NextResponse.json('Invalid request data passed', { status: 422 });
-		}
-		return NextResponse.json('Could not follow, please try again later', {
-			status: 500,
-		});
-	}
+    //create notification to post author
+    await prisma.notification.create({
+      data: {
+        entityId: communityId,
+        message: "has followed",
+        senderId: session.user.id,
+        type: Entity.COMMUNITY,
+        notifierId: follow.community.creatorId,
+        communityName: follow.community.name,
+      },
+    });
+
+    return NextResponse.json({
+      message: "You're now following this community",
+    });
+  } catch (error) {
+    return NextResponse.json(API_RESPONSES[STATUS_CODE.SERVER_ERROR], {
+      status: STATUS_CODE.SERVER_ERROR,
+    });
+  }
 }

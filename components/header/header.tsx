@@ -7,6 +7,7 @@ import HeaderMenu from "./header-menu";
 import HeaderLogo from "./header-logo";
 import prisma from "@/lib/db/prisma";
 import { ThemeToggle } from "./theme-toggle";
+import UserNotifications from "./notifications/user-notifications";
 
 const Header = async () => {
   const session = await getAuthSession();
@@ -15,7 +16,7 @@ const Header = async () => {
     session?.user &&
     (await prisma.follow.findMany({
       where: {
-        userId: session?.user.id,
+        userId: session.user.id,
       },
       include: {
         community: true,
@@ -29,7 +30,7 @@ const Header = async () => {
       },
     },
     include: {
-      Community: true,
+      community: true,
     },
     orderBy: {
       title: "asc",
@@ -46,7 +47,10 @@ const Header = async () => {
         <div className="flex gap-2">
           <ThemeToggle />
           {session ? (
-            <ProfileHeader user={session.user} />
+            <>
+              <UserNotifications role={session.user.role} />
+              <ProfileHeader user={session.user} />
+            </>
           ) : (
             <Link href="/sign-in" className={buttonVariants()}>
               Sign in
