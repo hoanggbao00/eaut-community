@@ -30,6 +30,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@tailwindcss/typography": "^0.5.12",
     "@tiptap/html": "^2.3.0",
+    "@vercel/speed-insights": "^1.0.10",
     "ai": "^3.0.21",
     "axios": "^1.6.8",
     "class-variance-authority": "^0.7.0",
