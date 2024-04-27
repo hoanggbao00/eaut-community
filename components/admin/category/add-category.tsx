@@ -1,20 +1,14 @@
 "use client";
 
-import { Button, buttonVariants } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
-import { IconList, IconType } from "@/lib/icons";
 import axios from "axios";
 import { X } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import SelectIcon from "./select-icon";
+import { Popover } from "@/components/ui/popover";
 
 const AddCategory = () => {
   const [isOpen, setOpen] = useState(false);
@@ -58,11 +52,11 @@ const AddCategory = () => {
   }, [isOpen]);
 
   return (
-    <DropdownMenu>
+    <Popover>
       <div className="flex gap-2">
         {isOpen && (
           <>
-            <SelectIcon icon={icon} setIcon={setIcon}/>
+            <SelectIcon icon={icon} setIcon={setIcon} />
             <Input ref={inputRef} placeholder="Title..." />
             <Button variant="outline" onClick={() => setOpen(false)}>
               <X size="16" />
@@ -73,7 +67,7 @@ const AddCategory = () => {
           {isOpen ? "Submit" : "Add New"}
         </Button>
       </div>
-    </DropdownMenu>
+    </Popover>
   );
 };
 
