@@ -10,7 +10,7 @@ import { Category, Community, Follow } from "@prisma/client";
 import ItemGroup from "./item-group";
 interface Props {
   followedCommunities: (Follow & { community: Community })[] | undefined;
-  categories: (Category & { Community?: Community[] })[] | undefined;
+  categories: (Category & { community?: Community[] })[] | undefined;
 }
 const HeaderMenu: React.FC<Props> = async ({
   followedCommunities,

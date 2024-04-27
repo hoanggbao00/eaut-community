@@ -1,7 +1,6 @@
 import { CollapsibleContent } from "@/components/ui/collapsible";
 import { Category, Community } from "@prisma/client";
 import MenuItem from "./menu-item";
-import { Play } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -13,9 +12,9 @@ import Image from "next/image";
 const ItemGroup = ({
   category,
 }: {
-  category: Category & { Community?: Community[] };
+  category: Category & { community?: Community[] };
 }) => {
-  return category.Community ? (
+  return category.community ? (
     <CollapsibleContent className="">
       <Accordion type="single" collapsible>
         <AccordionItem value={category.title}>
@@ -26,7 +25,7 @@ const ItemGroup = ({
             </span>
           </AccordionTrigger>
           <AccordionContent>
-            {category.Community.map((c) => (
+            {category.community.map((c) => (
               <MenuItem
                 key={c.id}
                 iconHref={c.image}

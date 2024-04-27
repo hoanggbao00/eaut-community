@@ -27,13 +27,18 @@ const page = async () => {
 
   return (
     <TooltipProvider>
-      <div className="flex justify-end items-center">
+      <div className="mb-1 flex items-center justify-end">
         <RefreshButton />
       </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 pb-2 sm:grid-cols-2 md:grid-cols-3">
         {request.length !== 0 ? (
           request.map((r) => (
-            <RequestItem key={r.id} request={r} user={r.user} community={r.community} />
+            <RequestItem
+              key={r.id}
+              request={r}
+              user={r.user}
+              community={r.community}
+            />
           ))
         ) : (
           <p>Nothing to show</p>

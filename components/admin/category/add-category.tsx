@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import SelectIcon from "./select-icon";
@@ -13,10 +13,12 @@ import { Popover } from "@/components/ui/popover";
 const AddCategory = () => {
   const [isOpen, setOpen] = useState(false);
   const [icon, setIcon] = useState("trophy");
+  const [isLoading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const handleAdd = async () => {
+    setLoading(true);
     try {
       if (!isOpen) return setOpen(true);
 
@@ -44,6 +46,8 @@ const AddCategory = () => {
         title: "Something went wrong.",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,7 +62,12 @@ const AddCategory = () => {
           <>
             <SelectIcon icon={icon} setIcon={setIcon} />
             <Input ref={inputRef} placeholder="Title..." />
-            <Button variant="outline" onClick={() => setOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setOpen(false)}
+              disabled={isLoading}
+            >
+              {isLoading && <Loader2 className="mr-2 size-5 animate-spin" />}
               <X size="16" />
             </Button>
           </>
