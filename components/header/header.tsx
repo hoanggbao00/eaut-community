@@ -21,6 +21,7 @@ const Header = async () => {
       include: {
         community: true,
       },
+      take: 5
     }));
 
   const categories = await prisma.category.findMany({

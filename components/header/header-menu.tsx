@@ -25,7 +25,7 @@ const HeaderMenu: React.FC<Props> = async ({
         <Menu />
       </label>
       <input type="checkbox" className="peer sr-only" id="header-menu" />
-      <aside className="fixed inset-0 top-[3.45rem] flex h-full w-0 flex-col gap-2 overflow-hidden overflow-y-auto rounded-r-md bg-background shadow-lg transition-all peer-checked:w-64 peer-checked:p-4 dark:border-r xl:w-64 xl:p-4">
+      <aside className="fixed inset-0 top-[3.45rem] flex h-full w-0 flex-col gap-2 overflow-y-auto rounded-r-md bg-background shadow-lg transition-all peer-checked:w-64 peer-checked:p-4 dark:border-r xl:w-64 xl:p-4 pb-7">
         <MenuItem
           icon={<HomeIcon color="dodgerblue" />}
           text="Your Feed"

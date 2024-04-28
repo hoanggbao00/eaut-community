@@ -35,7 +35,7 @@ export async function PUT(req: NextRequest) {
         id: postId,
       },
       select: {
-				authorId: true,
+        authorId: true,
         community: {
           select: {
             name: true,
@@ -86,16 +86,18 @@ export async function PUT(req: NextRequest) {
     });
 
     //create notification to post author
-    await prisma.notification.create({
-      data: {
-        entityId: postId,
-        message: "voted your post in",
-        senderId: session.user.id,
-        type: Entity.POST,
-        notifierId: post.authorId,
-        communityName: post.community.name,
-      },
-    });
+    if (session.user.id !== post.authorId) {
+      await prisma.notification.create({
+        data: {
+          entityId: postId,
+          message: "voted your post in",
+          senderId: session.user.id,
+          type: Entity.POST,
+          notifierId: post.authorId,
+          communityName: post.community.name,
+        },
+      });
+    }
 
     return NextResponse.json("Ok");
   } catch (error) {

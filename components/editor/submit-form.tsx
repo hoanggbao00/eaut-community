@@ -79,24 +79,29 @@ export const SubmitForm: React.FC<SubmitFormProps> = ({ communities }) => {
   async function onSubmit({ title, content, communityId }: FormData) {
     setLoading(true);
 
-    const attachmentUrl = attachment && (await uploadImage(attachment));
-    if (attachment && !attachmentUrl) {
-      toast({
-        title: "Failed to upload image",
-        variant: "warning",
-      });
+    try {
+      const attachmentUrl = attachment && (await uploadImage(attachment));
+      if (attachment && !attachmentUrl) {
+        toast({
+          title: "Failed to upload image",
+          variant: "warning",
+        });
+      }
+
+      const payload = {
+        title: title,
+        content: content,
+        communityId: communityId,
+        ...(attachment && { attachment: attachmentUrl }),
+        ...(isYoutubeValid && { attachment: youtubeUrl }),
+      };
+
+      createPost(payload);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-
-    const payload = {
-      title: title,
-      content: content,
-      communityId: communityId,
-      ...(attachment && { attachment: attachmentUrl }),
-      ...(isYoutubeValid && { attachment: youtubeUrl }),
-    };
-
-    createPost(payload);
-    setLoading(false);
   }
 
   return (

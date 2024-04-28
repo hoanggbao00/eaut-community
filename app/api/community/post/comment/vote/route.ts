@@ -80,16 +80,18 @@ export async function PUT(req: Request) {
     });
 
     //create notification to comment author
-    await prisma.notification.create({
-      data: {
-        entityId: newVote.comment.id,
-        message: "voted to your comment in",
-        senderId: session.user.id,
-        type: Entity.COMMENT,
-        notifierId: newVote.comment.authorId,
-        communityName: newVote.comment.post.community.name,
-      },
-    });
+    if (session.user.id !== newVote.comment.authorId) {
+      await prisma.notification.create({
+        data: {
+          entityId: newVote.comment.id,
+          message: "voted to your comment in",
+          senderId: session.user.id,
+          type: Entity.COMMENT,
+          notifierId: newVote.comment.authorId,
+          communityName: newVote.comment.post.community.name,
+        },
+      });
+    }
 
     return NextResponse.json("OK");
   } catch (error) {
