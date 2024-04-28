@@ -11,7 +11,7 @@ import { cn, formatTimeToNow } from "@/lib/utils";
 import { NotificationProps } from "@/types/db";
 import { UserRole } from "@prisma/client";
 import axios from "axios";
-import { Bell, Loader2, Router } from "lucide-react";
+import { Bell, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { startTransition, useEffect, useState } from "react";
 import useSWR from "swr";
@@ -68,7 +68,7 @@ const UserNotifications = ({ role }: { role: UserRole }) => {
       <DropdownMenuContent
         key={"user-notification"}
         align="end"
-        className="min-w-[400px]"
+        className="w-screen sm:w-[400px]"
       >
         <div className="mb-2 flex items-center justify-between">
           <h3 className="font-medium">Notifications</h3>
@@ -124,7 +124,7 @@ const UserNotifications = ({ role }: { role: UserRole }) => {
                 <DropdownMenuItem asChild key={item.id}>
                   <a
                     className={cn(
-                      "w-full cursor-pointer flex-col rounded-lg bg-background p-2 text-secondary-foreground shadow-md transition-colors hover:!bg-secondary-foreground/30",
+                      "w-full cursor-pointer flex-col rounded-lg bg-background p-2 text-secondary-foreground shadow-md transition-colors hover:!bg-secondary-foreground/30 ",
                       { "bg-secondary/90": item.status === false },
                     )}
                     onClick={() => handleRead(item.id, href)}
@@ -132,13 +132,13 @@ const UserNotifications = ({ role }: { role: UserRole }) => {
                     <time className="w-full text-end text-xs text-muted-foreground">
                       {formatTimeToNow(new Date(item.createdAt))}
                     </time>
-                    <div className="line-clamp-2 flex w-full items-center gap-1 truncate">
+                    <p className="line-clamp-2 w-full space-x-1 truncate text-wrap">
                       <span className="font-medium">{sender}</span>
                       <span>{item.message}</span>
                       <span className="font-medium">
                         c/{item.communityName}
                       </span>
-                    </div>
+                    </p>
                     <p className="line-clamp-2 w-full truncate text-muted-foreground">
                       {item.type === "COMMENT" ? `"${detail}"` : detail}
                     </p>
