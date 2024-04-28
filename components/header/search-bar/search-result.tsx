@@ -1,4 +1,3 @@
-import { EarthIcon, FilePen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -13,7 +12,7 @@ const SearchResult: React.FC<SearchResultProps> = ({ heading, data }) => {
   return (
     data && (
       <div className="">
-        <p className="text-sm font-medium">
+        <p className="text-sm text-muted-foreground">
           {heading} — <span className="text-xs">{data.length} results</span>
         </p>
         <div className="mt-1 space-y-2">
@@ -23,7 +22,7 @@ const SearchResult: React.FC<SearchResultProps> = ({ heading, data }) => {
                 type === "post" ? "/post/" + item.id : ""
               }`}
               key={item.id}
-              className="flex items-center gap-2 rounded-md p-2 transition-colors hover:bg-foreground/20"
+              className="flex items-center gap-2 rounded-md p-2 py-1 transition-colors hover:bg-foreground/20"
             >
               {type === "community" && (
                 <Image

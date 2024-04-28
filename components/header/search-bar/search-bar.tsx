@@ -65,7 +65,7 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
       )}
 
       {input && (
-        <div className="absolute inset-x-0 top-[120%] rounded-b-md bg-muted p-2 shadow">
+        <div className="sm:absolute sm:w-full sm:top-[120%] rounded-b-md bg-muted p-2 shadow fixed top-12 w-full left-0 h-fit">
           {isLoading && <div>Searching...</div>}
           {communityData && !isLoading && (
             <SearchResult
