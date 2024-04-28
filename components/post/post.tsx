@@ -49,7 +49,7 @@ const Post: FC<PostProps> = ({
     session?.user.role === "ADMIN";
 
   return (
-    <div className="rounded-md bg-background text-foreground border border-muted overflow-hidden">
+    <div className="overflow-hidden rounded-md border border-muted bg-background text-foreground">
       <div className="flex flex-col justify-between px-3 py-2">
         {/* post metadata */}
         <div className="relative flex max-h-20 items-center overflow-hidden text-xs text-gray-500">
@@ -119,13 +119,17 @@ const Post: FC<PostProps> = ({
           {/* content */}
           {post.content && (
             <div
-              className="relative max-h-40 w-full overflow-clip text-sm pb-2"
+              className="relative max-h-40 w-full overflow-clip pb-2 text-sm"
               ref={pRef}
             >
               <EditorOutput content={post.content} />
               {pRef.current?.clientHeight === 160 ? (
                 // blur bottom if content is too long
-                <div className="absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent"></div>
+                <div className="absolute bottom-0 left-0 grid h-24 w-full place-items-end bg-gradient-to-t from-background to-transparent">
+                  <span className="display-block mx-auto font-light text-muted-foreground">
+                    Show more
+                  </span>
+                </div>
               ) : null}
             </div>
           )}
@@ -145,7 +149,7 @@ const Post: FC<PostProps> = ({
         </a>
       </div>
       {/* post vote */}
-      <div className="flex gap-2 bg-muted text-sm sm:px-6 py-1">
+      <div className="flex gap-2 bg-muted py-1 text-sm sm:px-6">
         <PostVoteClient
           postId={post.id}
           initialVoteCount={_voteCount}
