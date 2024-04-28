@@ -59,7 +59,7 @@ const HeaderMenu: React.FC<Props> = async ({
               ))}
           </Collapsible>
         )}
-        <Collapsible defaultOpen={!followedCommunities}>
+        <Collapsible defaultOpen>
           <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md p-2 px-3 hover:bg-foreground/20">
             <p className="text-left text-sm text-gray-500">CATEGORIES</p>
             <ChevronDown className="text-gray-500" />

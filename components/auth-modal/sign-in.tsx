@@ -6,35 +6,34 @@ const SignIn = () => {
   return (
     <div className="container flex w-full flex-col justify-center space-y-6 sm:w-[400px]">
       <div className="flex flex-col items-center space-y-2 text-center">
-        <div className="relative h-8 w-8">
+        <div className="relative size-12">
           <Image
             src="/eaut-logo.webp"
             alt="eaut-logo"
             fill
-            className="h-8 w-8 object-cover"
+            className="size-full object-cover"
           />
         </div>
         <h1 className="text-2xl font-semibold tracking-tight">
-          Chao mung quay lai
+          Chào mừng tới EAUT Community
         </h1>
         <p className="mx-auto max-w-xs text-sm">
-          De tiep tuc, vui long dang nhap hoac dang ky tai khoan EAUT Comunity
-          va dong y voi dieu khoan su dung cua chung toi.
+          Để tiếp tục sử dụng dịch vụ, bạn có thể đăng nhập hoặc đăng ký
+          bằng <b>tài khoản Google</b> của bạn.
         </p>
 
         {/* sign in form */}
         <UserAuthForm />
 
         <p className="px-8 text-center text-sm">
-          Lan dau toi day?{" "}
-          <Link
-            href="/sign-up"
-            className="text-sm underline underline-offset-4 hover:text-zinc-800"
-          >
-            Dang ky ngay
-          </Link>
+          Lần đầu tới đây?
+          <span className="text-sm underline underline-offset-4 ml-1">Đăng ký ngay</span>
         </p>
       </div>
+      <span className="text-xs text-muted-foreground text-center">
+        Bằng việc tiếp tục, có nghĩa là bạn đồng ý với điều khoản sử dụng của
+        chúng tôi.
+      </span>
     </div>
   );
 };
