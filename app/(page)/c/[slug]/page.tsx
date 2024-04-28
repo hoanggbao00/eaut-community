@@ -135,6 +135,7 @@ const page = async ({ params, searchParams }: CommunityPageProps) => {
     session?.user.role === "ADMIN" ||
     session?.user.id === community.creatorId ||
     !!isModerator;
+    console.log(isPermission);
 
   return (
     <>

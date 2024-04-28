@@ -159,7 +159,7 @@ const CommunityPostPage = async ({
                     />
                   </div>
                 ))}
-              <EditorOutput content={post?.content} />
+              {post?.content && <EditorOutput content={post?.content} />}
             </>
           ) : (
             <PostEdit

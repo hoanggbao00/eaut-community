@@ -12,7 +12,6 @@ import {
 import { ChevronsUpDown, Loader2, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { useRouter } from "next/navigation";
 
 const CommunityAlerts = ({
   isPermission,
@@ -27,7 +26,6 @@ const CommunityAlerts = ({
   const [isAdding, setAdd] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
 
   const handleEdit = async (itemIndex: number, text: string) => {
     const newData = alertData.map((alertText, index) => {
@@ -118,7 +116,7 @@ const CommunityAlerts = ({
               />
             );
           })}
-          {alertData.length <= 3 && (
+          {isPermission && alertData.length <= 3 && (
             <div className="flex items-center justify-center gap-2">
               {isAdding && (
                 <>
