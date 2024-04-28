@@ -11,7 +11,7 @@ export async function GET(
 
   const { searchParams } = new URL(req.url);
   const page = parseInt(searchParams.get("page") || "1");
-  const take = 6;
+  const take = parseInt(searchParams.get("take") || "6");
 
   try {
     //find post
@@ -115,9 +115,7 @@ export async function GET(
       prisma.comment.findMany(query),
     ]);
 
-    const totalPage = Math.ceil(total / take);
-
-    return NextResponse.json({ total: totalPage, data: data });
+    return NextResponse.json({ total: total, data: data });
   } catch (error) {
     console.log(error);
     return NextResponse.json("Something went wrong", { status: 500 });
