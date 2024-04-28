@@ -1,4 +1,4 @@
-import { Community, RequestStatus } from "@prisma/client";
+import { Community } from "@prisma/client";
 import { Session } from "next-auth";
 import Image from "next/image";
 import CommunityAction from "./community-action";
@@ -29,10 +29,7 @@ const CommunityHeader: React.FC<CommunityHeaderProps> = ({
         <Image
           alt="cover"
           fill
-          src={
-            community.cover ||
-            "https://styles.redditmedia.com/t5_2ubgg/styles/bannerBackgroundImage_qhj1ts036d811.jpg?format=pjpg&s=9f3ecce6a0cf7923edaeca4a3f31389f15b8db63"
-          }
+          src={community.cover || ""}
           className="rounded-lg object-cover"
         />
       </div>
