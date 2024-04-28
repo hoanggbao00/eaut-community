@@ -25,12 +25,12 @@ const ChangeProfileImage = ({ initImage, userName, image }: props) => {
       <input
         id="avatar"
         type="file"
-        accept="image/png, image/jpeg"
+        accept="image/png, image/jpeg, image/webp"
         onChange={async (e) => {
           const file = e.target.files![0];
           const compressedFile: File = await compressImage(file, {
             quality: 0.8,
-            type: "image/jpeg",
+            type: "image/webp",
           });
 
           image.setImage(compressedFile);

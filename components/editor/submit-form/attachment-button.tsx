@@ -84,12 +84,12 @@ const AttachmentButton: React.FC<props> = ({
       <input
         id="attachment"
         type="file"
-        accept="image/jpeg, image/png"
+        accept="image/jpeg, image/png, image/webp"
         hidden
         onChange={async (e) => {
           const resizeImage = await compressImage(e.target.files![0], {
             quality: 0.8,
-            type: "image/jpeg",
+            type: "image/webp",
           });
           setAttachment(resizeImage);
           const previewUrl = URL.createObjectURL(resizeImage);

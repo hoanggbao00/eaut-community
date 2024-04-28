@@ -139,11 +139,11 @@ const PostEdit: React.FC<PostEditProps> = ({
               </label>
               <Input
                 type="file"
-                accept="image/jpeg, image/png"
+                accept="image/jpeg, image/png, image/webp"
                 onChange={async (e) => {
                   const resizeImage = await compressImage(e.target.files![0], {
                     quality: 0.8,
-                    type: "image/jpeg",
+                    type: "image/webp",
                   });
                   const previewUrl = URL.createObjectURL(resizeImage);
                   setPreview(previewUrl);
