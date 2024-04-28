@@ -78,15 +78,6 @@ export const SubmitForm: React.FC<SubmitFormProps> = ({ communities }) => {
   // Handle form submit
   async function onSubmit({ title, content, communityId }: FormData) {
     setLoading(true);
-    if (
-      JSON.stringify(content) ===
-      JSON.stringify({ type: "doc", content: [{ type: "paragraph" }] })
-    )
-      return toast({
-        title: "Something went wrong.",
-        description: "Content could not be empty",
-        variant: "destructive",
-      }); //Check if no content
 
     const attachmentUrl = attachment && (await uploadImage(attachment));
     if (attachment && !attachmentUrl) {
