@@ -296,7 +296,7 @@ model Notification {
 
   request Request? @relation("RequestNotification", fields: [entityId], references: [id], onDelete: SetNull)
 
-  comment Comment? @relation("CommentNotification", fields: [entityId], references: [id], onDelete: SetNull)
+  comment Comment? @relation("CommentNotification", fields: [entityId], references: [id], onDelete: Cascade)
 
   sender User @relation("NotificationSender", fields: [senderId], references: [id], onDelete: Cascade)
 
