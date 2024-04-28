@@ -89,7 +89,7 @@ export const SubmitForm: React.FC<SubmitFormProps> = ({ communities }) => {
       }); //Check if no content
 
     const attachmentUrl = attachment && (await uploadImage(attachment));
-    if (!attachmentUrl) {
+    if (attachment && !attachmentUrl) {
       toast({
         title: "Failed to upload image",
         variant: "warning",

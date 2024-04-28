@@ -171,35 +171,37 @@ const CommunityPostPage = async ({
             />
           )}
         </div>
-        <div>
-          <Suspense fallback={<VoteSkeleton />}>
-            <div className="mt-2 w-fit">
-              <PostVoteServer
-                postId={post?.id}
-                getData={async () => {
-                  return await prisma.post.findUnique({
-                    where: {
-                      id: params.postId,
-                    },
-                    include: {
-                      votes: true,
-                    },
-                  });
-                }}
-              />
-            </div>
-          </Suspense>
-          <Suspense
-            fallback={
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin text-muted-foreground" />{" "}
-                Loading comment...
-              </>
-            }
-          >
-            <CommentsSection postId={post?.id} communityName={params.slug} />
-          </Suspense>
-        </div>
+        {!isEdit && (
+          <div>
+            <Suspense fallback={<VoteSkeleton />}>
+              <div className="mt-2 w-fit">
+                <PostVoteServer
+                  postId={post?.id}
+                  getData={async () => {
+                    return await prisma.post.findUnique({
+                      where: {
+                        id: params.postId,
+                      },
+                      include: {
+                        votes: true,
+                      },
+                    });
+                  }}
+                />
+              </div>
+            </Suspense>
+            <Suspense
+              fallback={
+                <span>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin text-muted-foreground" />
+                  Loading comment...
+                </span>
+              }
+            >
+              <CommentsSection postId={post?.id} communityName={params.slug} />
+            </Suspense>
+          </div>
+        )}
       </div>
 
       {/* Community info */}

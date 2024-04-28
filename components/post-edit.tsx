@@ -6,12 +6,12 @@ import { Card, CardContent, CardFooter } from "./ui/card";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import NovelEditor from "./editor/novel-editor";
 import Image from "next/image";
 import { Input } from "./ui/input";
-import { checkYoutubeUrl, cn, compressImage, uploadImage } from "@/lib/utils";
+import { checkYoutubeUrl, compressImage, uploadImage } from "@/lib/utils";
 import { Loader2, X } from "lucide-react";
 import YoutubeEmbed from "./youtube-embed";
 
@@ -40,6 +40,7 @@ const PostEdit: React.FC<PostEditProps> = ({
   const [youtubeUrl, setYouTubeUrl] = useState("");
   const [isYoutubeValid, setYoutubeValid] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const pathname = usePathname()
 
   const handleYoutube = () => {
     const isValid = checkYoutubeUrl(youtubeUrl);
@@ -89,7 +90,7 @@ const PostEdit: React.FC<PostEditProps> = ({
         variant: "success",
       });
       if (res) {
-        router.push(`/c/${communityName}`);
+        router.push(pathname);
         setTimeout(() => {
           router.refresh();
         }, 2000);
@@ -121,7 +122,8 @@ const PostEdit: React.FC<PostEditProps> = ({
             initContent={postContent as JSONContent}
           />
         </CardContent>
-        <CardFooter className="justify-end p-3 pt-0">
+        <CardFooter className="justify-end p-3 pt-0 gap-2">
+          <Button variant='outline' onClick={() => router.push(pathname)}>Close</Button>
           <Button onClick={handleEdit} disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 size-5 animate-spin" />}
             Update
@@ -130,8 +132,8 @@ const PostEdit: React.FC<PostEditProps> = ({
       </Card>
       <div className="mt-4">
         {!preview && (
-          <div className="flex gap-2">
-            <div>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <div className="">
               <label htmlFor="attachment" className="font-medium">
                 Attachment
               </label>
@@ -149,11 +151,11 @@ const PostEdit: React.FC<PostEditProps> = ({
                 }}
               />
             </div>
-            <div className="w-[450px]">
+            <div className="">
               <label htmlFor="youtube-url" className="block font-medium">
                 Youtube Url
               </label>
-              <div className="relative inline-block w-[350px]">
+              <div className="relative inline-block pr-14">
                 <Input
                   value={youtubeUrl}
                   id="youtube-url"
