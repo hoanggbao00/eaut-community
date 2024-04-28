@@ -62,17 +62,13 @@ const AddCategory = () => {
           <>
             <SelectIcon icon={icon} setIcon={setIcon} />
             <Input ref={inputRef} placeholder="Title..." />
-            <Button
-              variant="outline"
-              onClick={() => setOpen(false)}
-              disabled={isLoading}
-            >
-              {isLoading && <Loader2 className="mr-2 size-5 animate-spin" />}
+            <Button variant="outline" onClick={() => setOpen(false)}>
               <X size="16" />
             </Button>
           </>
         )}
-        <Button className="" onClick={handleAdd}>
+        <Button className="" onClick={handleAdd} disabled={isLoading}>
+          {isLoading && <Loader2 className="mr-2 size-5 animate-spin" />}
           {isOpen ? "Submit" : "Add New"}
         </Button>
       </div>
