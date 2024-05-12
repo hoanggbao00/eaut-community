@@ -29,6 +29,7 @@ interface CommentMoreProps {
   commentAuthor: string | null;
   commentId: string;
   router: AppRouterInstance
+  mutate: () => void;
 }
 
 const CommentMore: React.FC<CommentMoreProps> = ({
@@ -36,17 +37,15 @@ const CommentMore: React.FC<CommentMoreProps> = ({
   session,
   commentAuthor,
   commentId,
-  router
+  router,
+  mutate
 }) => {
   const handleDelete = async () => {
     try {
       const deleted = await axios.delete(
         `/api/community/post/comment/${commentId}`,
       );
-      toast({
-        title: "Deleted!",
-        description: "Your comment has been deleted.",
-      });
+      mutate()
       router.refresh()
     } catch (error) {
       console.log(error);

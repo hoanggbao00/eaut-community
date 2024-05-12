@@ -89,6 +89,7 @@ const PostComment: FC<PostCommentProps> = ({
             session={session}
             commentAuthor={comment.authorId}
             setEdit={setEdit}
+            mutate={mutate}
           />
           <ShowAvatar
             data={{
