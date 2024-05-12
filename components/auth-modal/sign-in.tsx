@@ -25,7 +25,7 @@ const SignIn = () => {
         {/* sign in form */}
         <UserAuthForm />
 
-        <p className="px-8 text-center text-sm">
+        <p className="px-8 text-center text-sm" hidden>
           Lần đầu tới đây?
           <span className="text-sm underline underline-offset-4 ml-1">Đăng ký ngay</span>
         </p>

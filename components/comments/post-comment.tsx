@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, formatTimeToNow } from "@/lib/utils";
+import { cn, formatTimeToNow, urlify } from "@/lib/utils";
 import { CommentRequest } from "@/lib/validators/comment";
 import { CommentVote } from "@prisma/client";
 import axios from "axios";
@@ -17,7 +17,6 @@ import CommentMore from "./comment-more";
 import EditComment from "./edit-comment";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { ExtendedComment } from "@/types/db";
-import { mutate } from "swr";
 
 interface PostCommentProps {
   comment: ExtendedComment;
@@ -42,7 +41,6 @@ const PostComment: FC<PostCommentProps> = ({
     `@${comment.author ? comment.author.username : "User has removed"} `,
   );
   const [isEdit, setEdit] = useState(false);
-  const [editContent, setEditContent] = useState(comment.content);
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
@@ -59,15 +57,14 @@ const PostComment: FC<PostCommentProps> = ({
     }
     try {
       setLoading(true);
-      const payload: CommentRequest = { postId, content, replyToId };
+      const text = content.replace(/\r?\n/g, '<br />');
+      const payload: CommentRequest = { postId, content: text, replyToId };
 
-      const { data } = await axios.post(
+      await axios.post(
         `/api/community/post/comment/`,
         payload,
       );
-      if (data) {
-        mutate();
-      }
+      mutate()
     } catch (error) {
       return toast({
         title: "Something went wrong.",
@@ -79,6 +76,8 @@ const PostComment: FC<PostCommentProps> = ({
       setIsReplying(false);
     }
   };
+
+  const commentContent = urlify(comment.content)
 
   return (
     <div className="flex flex-col gap-y-2">
@@ -131,14 +130,13 @@ const PostComment: FC<PostCommentProps> = ({
       {isEdit ? (
         <EditComment
           commentId={comment.id}
-          editContent={editContent}
           oldComment={comment.content}
-          setEditContent={setEditContent}
           router={router}
           setEdit={setEdit}
+          mutate={mutate}
         />
       ) : (
-        <p className="text-sm">{comment.content}</p>
+        <p className="text-sm" dangerouslySetInnerHTML={{__html: commentContent}}></p>
       )}
 
       <div className="flex items-center gap-2">

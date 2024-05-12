@@ -19,7 +19,7 @@ const ItemGroup = ({
       <Accordion type="single" collapsible>
         <AccordionItem value={category.title}>
           <AccordionTrigger showArrow={category.community.length > 0} className="w-full gap-2 rounded-sm p-2 px-3 hover:bg-foreground/10">
-            <span className="flex items-center gap-2 text-gray-700">
+            <span className="flex items-center gap-2 text-foreground">
               <Image src={`/${category.icon}.svg`} width="24" height="24" alt="icon" />
               {category.title}
             </span>

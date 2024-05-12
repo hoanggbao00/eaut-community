@@ -8,7 +8,6 @@ import { ExtendedComment } from "@/types/db";
 import useSWR from "swr";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "../ui/button";
-import { Loader2 } from "lucide-react";
 
 interface CommentsSectionProps {
   postId: string;
@@ -40,8 +39,10 @@ const CommentsSection = ({ postId, communityName }: CommentsSectionProps) => {
 
   useEffect(() => {
     if (!data) return;
+    if(page == 1) return setComments(data.data)
     setComments((prev) => [...prev, ...data.data]);
   }, [data?.data]);
+
 
   const totalPage = useMemo(() => {
     if (!data?.total) return 1;

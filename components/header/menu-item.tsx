@@ -36,7 +36,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
         })}
       >
         {iconHref && (
-          <Image src={`${iconHref}.svg`} alt={"img"} width={24} height={24} />
+          <Image src={`${iconHref}.svg`} alt={"img"} width={28} height={28} className="rounded-full"/>
         )}
         {icon && icon}
       </div>

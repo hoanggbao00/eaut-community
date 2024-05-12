@@ -1,7 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { formatDistanceToNowStrict } from "date-fns";
-import { enUS } from "date-fns/locale";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "./firebaseConfig";
 
@@ -122,3 +121,10 @@ export const getYoutubeId = (url: string) => {
     return a;
   }
 };
+
+export function urlify(text: string) {
+  const URL_REGEX = /(([a-z]+:\/\/)?(([a-z0-9\-]+\.)+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|local|internal))(:[0-9]{1,5})?(\/[a-z0-9_\-\.~]+)*(\/([a-z0-9_\-\.]*)(\?[a-z0-9+_\-\.%=&amp;]*)?)?(#[a-zA-Z0-9!$&'()*+.=-_~:@/?]*)?)(\s+|$)/gi;
+  return text.replace(URL_REGEX, function(url) {
+    return `<a style='text-decoration: underline; color: CornflowerBlue;' href="${url}">${url}</a>`;
+  })
+}

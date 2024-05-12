@@ -34,9 +34,12 @@ const CreateComment: FC<CreateCommentProps> = ({
   };
 
   const handleComment = async () => {
+    if(!input) return;
     setLoading(true);
     try {
-      const payload: CommentRequest = { postId, content: input, replyToId };
+      const text = input.replace(/\r?\n/g, '<br />');
+      console.log(text);
+      const payload: CommentRequest = { postId, content: text, replyToId };
 
       const { data } = await axios.post(
         `/api/community/post/comment/`,
