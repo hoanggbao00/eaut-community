@@ -140,7 +140,7 @@ const UserNotifications = ({ role }: { role: UserRole }) => {
                       </span>
                     </p>
                     <p className="line-clamp-2 w-full truncate text-muted-foreground">
-                      {item.type === "COMMENT" ? `"${detail}"` : detail}
+                      {item.type === "COMMENT" ? <p dangerouslySetInnerHTML={{__html: detail}}></p> : detail}
                     </p>
                   </a>
                 </DropdownMenuItem>
