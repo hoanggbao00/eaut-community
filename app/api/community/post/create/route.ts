@@ -1,7 +1,7 @@
 import { getAuthSession } from "@/lib/auth";
 import { API_RESPONSES, STATUS_CODE } from "@/lib/constants";
 import prisma from "@/lib/db/prisma";
-import { Entity } from "@prisma/client";
+import { Entity, VoteType } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 //POST: /api/community/post/create
@@ -49,6 +49,12 @@ export async function POST(req: NextRequest) {
         content,
         communityId,
         authorId: session.user.id,
+        votes: {
+          create: {
+            userId: session.user.id,
+            type: VoteType.UP
+          }
+        },
         ...(attachment && { attachment: attachment }),
       },
       select: {

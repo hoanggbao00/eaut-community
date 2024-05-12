@@ -66,6 +66,7 @@ export async function POST(req: Request) {
     });
 
     //create notification to post author
+    if(session.user.id !== comment.authorId )
     await prisma.notification.create({
       data: {
         entityId: comment.id,
@@ -78,7 +79,7 @@ export async function POST(req: Request) {
     });
 
     // create notification to comment author
-    if (replyAuthor)
+    if (replyAuthor && session.user.id !== replyAuthor.authorId)
       await prisma.notification.create({
         data: {
           entityId: comment.id,
