@@ -12,7 +12,7 @@ const Feedpage = async () => {
 
   return (
     <>
-      <h1 className="text-3xl font-bold md:text-4xl">Your Feed</h1>
+      <h1 className="text-3xl font-bold md:text-4xl">Trang chính</h1>
       <div className="flex flex-col-reverse gap-y-4 py-6 md:flex-row md:gap-x-4">
         <div className="flex-1">
           <MiniCreatePost session={session} />

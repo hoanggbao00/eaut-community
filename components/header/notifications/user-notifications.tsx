@@ -71,10 +71,10 @@ const UserNotifications = ({ role }: { role: UserRole }) => {
         className="w-screen sm:w-[400px]"
       >
         <div className="mb-2 flex items-center justify-between">
-          <h3 className="font-medium">Notifications</h3>
+          <h3 className="font-medium">Thông báo</h3>
           <div className="flex items-center gap-1">
             <Button variant="outline" size="sm" onClick={() => handleRead()}>
-              Mask as Read
+            Đánh dấu đã đọc
             </Button>
             <Button
               disabled={isLoading}
@@ -85,7 +85,7 @@ const UserNotifications = ({ role }: { role: UserRole }) => {
               }}
             >
               {isLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
-              Refresh
+              Làm mới
             </Button>
           </div>
         </div>

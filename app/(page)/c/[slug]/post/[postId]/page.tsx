@@ -134,7 +134,7 @@ const CommunityPostPage = async ({
                       href={`/user/${post.author.username}`}
                       className="hover:underline"
                     >
-                      Posted by <b>{post.author!.username}</b>
+                      Đăng bởi <b>{post.author!.username}</b>
                     </Link>
                     {" • "}
                     {formatTimeToNow(new Date(post?.createdAt))}

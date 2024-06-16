@@ -77,7 +77,7 @@ const Post: FC<PostProps> = ({
                   </a>
                 </div>
                 <div>
-                  <span>Posted by </span>
+                  <span>Đăng bởi </span>
                   <Link
                     className="cursor-pointer text-foreground hover:underline"
                     href={`/user/${author.username}`}
@@ -96,7 +96,7 @@ const Post: FC<PostProps> = ({
                 data={{ image: author.image, name: communityName }}
                 className="mr-2 h-7 w-7"
               />
-              <span>Posted by </span>
+              <span>Đăng bởi </span>
               <Link
                 className="ml-1 cursor-pointer text-foreground hover:underline"
                 href={`/user/${author.username}`}
@@ -129,7 +129,7 @@ const Post: FC<PostProps> = ({
                 // blur bottom if content is too long
                 <a href={`/c/${communityName.toLowerCase()}/post/${post.id}`} className="absolute bottom-0 left-0 grid h-24 w-full place-items-end bg-gradient-to-t from-background to-transparent">
                   <span className="display-block mx-auto font-light text-muted-foreground">
-                    Read more
+                  Xem thêm
                   </span>
                 </a>
               ) : null}
@@ -139,14 +139,11 @@ const Post: FC<PostProps> = ({
             (checkYoutubeUrl(post.attachment) ? (
               <YoutubeEmbed src={post.attachment} />
             ) : (
-              <div className="relative h-[300px] w-full">
-                <Image
+                <img
                   src={post.attachment}
                   alt="post attachment"
-                  fill
-                  className="rounded-md object-cover"
+                  className="rounded-md w-full"
                 />
-              </div>
             ))}
         </article>
       </div>
@@ -165,7 +162,7 @@ const Post: FC<PostProps> = ({
               "flex w-fit items-center gap-2 !rounded-full hover:text-sky-500 dark:border dark:border-muted-foreground",
           })}
         >
-          <MessageSquare className="h-4 w-4" /> {commentCount} comments
+          <MessageSquare className="h-4 w-4" /> {commentCount} Thảo luận
         </Link>
       </div>
     </div>

@@ -57,8 +57,8 @@ const PostVoteClient = ({
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
           return toast({
-            title: "You need to sign in to vote this post.",
-            description: "Your vote was not registered. Please try again.",
+            title: "Bạn cần đăng nhập để vote bài viết này.",
+            description: "Vote không thành công, vui lòng thử lại sau.",
             variant: "destructive",
           });
         }

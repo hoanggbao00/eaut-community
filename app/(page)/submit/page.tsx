@@ -32,7 +32,7 @@ const page = async () => {
       <div className="border-b border-gray-200 pb-5">
         <div className="flex items-center">
           <BackRoute />
-          <h3 className="text-lg font-semibold text-muted-foreground">Create Post</h3>
+          <h3 className="text-lg font-semibold text-muted-foreground">Tạo bài viết</h3>
         </div>
       </div>
 

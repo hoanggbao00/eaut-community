@@ -114,10 +114,10 @@ const page = async ({ params, searchParams }: Props) => {
         {!user.isDeleted && (
           <Tabs defaultValue={tab ? tab : "posts"} className="!mt-12">
             <TabsList>
-              <TabsTrigger value="posts">Posts</TabsTrigger>
-              <TabsTrigger value="comments">Comments</TabsTrigger>
+              <TabsTrigger value="posts">Bài đăng</TabsTrigger>
+              <TabsTrigger value="comments">Bình luận</TabsTrigger>
               <TabsTrigger value="info" className="md:hidden">
-                Info
+              Thông tin
               </TabsTrigger>
             </TabsList>
             <Separator className="mt-2" />

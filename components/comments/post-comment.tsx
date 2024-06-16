@@ -156,7 +156,7 @@ const PostComment: FC<PostCommentProps> = ({
           size="sm"
         >
           <MessageSquare className="mr-1.5 h-4 w-4" />
-          Reply
+          Trả lời
         </Button>
       </div>
 
@@ -190,7 +190,7 @@ const PostComment: FC<PostCommentProps> = ({
 
             <div className="mt-2 flex justify-between">
               <p className="mt-2 hidden text-xs leading-[0.5rem] text-gray-500 sm:block">
-                Press
+                Nhấn
                 <kbd className="ml-1 rounded-md border bg-muted px-1 uppercase">
                   Ctrl
                 </kbd>
@@ -198,7 +198,7 @@ const PostComment: FC<PostCommentProps> = ({
                 <kbd className="mr-1 rounded-md border bg-muted px-1 uppercase">
                   Enter
                 </kbd>
-                to submit your comment.
+                để gửi bình luận của bạn.
               </p>
               <div>
                 <Button
@@ -207,7 +207,7 @@ const PostComment: FC<PostCommentProps> = ({
                   onClick={() => setIsReplying(false)}
                   className="mr-2"
                 >
-                  Cancel
+                  Huỷ bỏ
                 </Button>
                 <Button
                   disabled={loading}
@@ -221,7 +221,7 @@ const PostComment: FC<PostCommentProps> = ({
                   }}
                 >
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Send
+                  Gửi
                 </Button>
               </div>
             </div>

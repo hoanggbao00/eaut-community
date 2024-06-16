@@ -40,16 +40,16 @@ const CommunityDelete = ({ communityName }: { communityName: string }) => {
   return (
     <AlertDialog key={'confirm-delete'}>
       <AlertDialogTrigger className="text-left w-full rounded-md p-1 text-destructive transition-colors hover:bg-foreground/10">
-        Delete
+      Xoá
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="text-destructive">
-            Delete Community
+          Xoá cộng đồng
           </AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogDescription>
-          Are you sure you want to delete this community?
+        Bạn có chắc chắn muốn xoá cộng đồng này không?
         </AlertDialogDescription>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -57,7 +57,7 @@ const CommunityDelete = ({ communityName }: { communityName: string }) => {
             onClick={handleDelete}
             className={buttonVariants({ variant: "destructive" })}
           >
-            Delete
+            Xoá
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

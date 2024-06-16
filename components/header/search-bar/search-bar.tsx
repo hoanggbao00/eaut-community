@@ -58,7 +58,7 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
         }}
         value={input}
         className="border-none outline-none focus:!border-none focus:!outline-none"
-        placeholder="Search communities..."
+        placeholder="Tìm kiếm..."
       />
       {isLoading && (
         <Loader2 className="absolute right-3 top-[22%] h-6 w-6 animate-spin" />
@@ -66,16 +66,16 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
 
       {input && (
         <div className="sm:absolute sm:w-full sm:top-[120%] rounded-b-md bg-muted p-2 shadow fixed top-12 w-full left-0 h-fit">
-          {isLoading && <div>Searching...</div>}
+          {isLoading && <div>Đang tìm kiếm...</div>}
           {communityData && !isLoading && (
             <SearchResult
               key={"communities"}
-              heading="Communities"
+              heading="Cộng đồng"
               data={communityData}
             />
           )}
           {postData && !isLoading && (
-            <SearchResult key={"posts"} heading="Post" data={postData} />
+            <SearchResult key={"posts"} heading="Bài đăng" data={postData} />
           )}
         </div>
       )}

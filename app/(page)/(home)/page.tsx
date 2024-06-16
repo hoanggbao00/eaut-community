@@ -31,7 +31,7 @@ const Homepage = async () => {
 
   return (
     <>
-      <h1 className="text-3xl font-bold md:text-4xl">Popular</h1>
+      <h1 className="text-3xl font-bold md:text-4xl">Phổ biến</h1>
       <div className="flex flex-col-reverse gap-y-4 py-6 md:flex-row md:gap-x-4">
         <div className="flex-1">
           {session && <MiniCreatePost session={session} />}
@@ -43,7 +43,7 @@ const Homepage = async () => {
           <div className="bg-emerald-100 px-6">
             <p className="flex items-center gap-1.5 py-3 font-semibold text-gray-500">
               <EarthIcon className="h-4 w-4" />
-              Popular Community
+              Cộng đồng phổ biến
             </p>
           </div>
           <div className="space-y-2 p-2">

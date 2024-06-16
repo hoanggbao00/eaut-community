@@ -54,7 +54,7 @@ const Header = async () => {
             </>
           ) : (
             <Link href="/sign-in" className={buttonVariants()}>
-              Sign in
+              Đăng nhập
             </Link>
           )}
           <HeaderMenu

@@ -43,7 +43,7 @@ const CommunityAction: React.FC<CommunityActionProps> = async ({
             className: "!rounded-full",
           })}
         >
-          <Plus className="mr-2 h-4 w-4" /> Create post
+          <Plus className="mr-2 h-4 w-4" /> Tạo bài viết
         </Link>
       )}
       {community.creatorId !== session?.user?.id && (

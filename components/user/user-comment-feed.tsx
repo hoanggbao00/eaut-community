@@ -49,19 +49,17 @@ const UserCommentFeed: React.FC<Props> = ({ comments, userName }) => {
                     image: comment.post.community.image,
                   }}
                 />
-                <p className="font-medium">r/{comment.post.community.name}</p>
-                <span>•</span>
-                <p className="font-semibold">{comment.post.title}</p>
+                <p className="font-medium w-fit">r/{comment.post.community.name} • {comment.post.title}</p>
               </div>
               <div className="space-y-3">
                 <p className="space-x-2">
                   <b>{userName}</b>
                   <span className="text-xs text-muted-foreground">
-                    {comment.replyToId ? "replied" : "commented"}
+                    {comment.replyToId ? "đã trả lời " : "đã bình luận "}
                     {formatTimeToNow(new Date(comment.createdAt))}
                   </span>
                 </p>
-                <p>{`"${comment.content}"`}</p>
+                <p dangerouslySetInnerHTML={{__html: comment.content}}></p>
               </div>
               <div className="w-fit">
                 <PostVoteClient

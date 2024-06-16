@@ -13,7 +13,7 @@ const SearchResult: React.FC<SearchResultProps> = ({ heading, data }) => {
     data && (
       <div className="">
         <p className="text-sm text-muted-foreground">
-          {heading} — <span className="text-xs">{data.length} results</span>
+          {heading} — <span className="text-xs">{data.length} kết quả</span>
         </p>
         <div className="mt-1 space-y-2">
           {data.map((item) => (

@@ -28,12 +28,12 @@ const HeaderMenu: React.FC<Props> = async ({
       <aside className="fixed inset-0 top-[3.45rem] flex h-full w-0 flex-col gap-2 overflow-y-auto rounded-r-md bg-background shadow-lg transition-all peer-checked:w-64 peer-checked:p-4 dark:border-r xl:w-64 xl:p-4 pb-7">
         <MenuItem
           icon={<HomeIcon color="dodgerblue" />}
-          text="Your Feed"
+          text="Trang chính"
           href="/feed"
         />
         <MenuItem
           icon={<AreaChart color="dodgerblue" />}
-          text="Popular"
+          text="Phổ biến"
           href="/"
         />
         <Separator className="my-1" />
@@ -61,7 +61,7 @@ const HeaderMenu: React.FC<Props> = async ({
         )}
         <Collapsible defaultOpen>
           <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md p-2 px-3 hover:bg-foreground/20">
-            <p className="text-left text-sm text-gray-500">CATEGORIES</p>
+            <p className="text-left text-sm text-gray-500">DANH MỤC</p>
             <ChevronDown className="text-gray-500" />
           </CollapsibleTrigger>
           {categories &&

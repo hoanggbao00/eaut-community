@@ -93,7 +93,7 @@ const UserCard = ({
                     </AlertDialogTrigger>
                   </TooltipTrigger>
                   <TooltipContent className="bg-background font-semibold shadow-md text-red-500">
-                    Delete User
+                  Xoá người dùng
                   </TooltipContent>
                 </Tooltip>
               )}
@@ -103,20 +103,20 @@ const UserCard = ({
               <div className="text-sm">
                 <p className="font-medium">{user.postCount}</p>
                 <span className="text-xs text-muted-foreground">
-                  Post Interact
+                Điểm bài viết
                 </span>
               </div>
               <div className="flex-1 text-sm">
                 <p className="font-medium">{user.commentCount}</p>
                 <span className="text-xs text-muted-foreground">
-                  Comment Action
+                Điểm bình luận
                 </span>
               </div>
               <div className="flex-1 text-sm">
                 <p className="font-medium">
                   {formatDate(new Date().toISOString(), "PP")}
                 </p>
-                <span className="text-xs text-muted-foreground">Make day</span>
+                <span className="text-xs text-muted-foreground">Ngày tạo</span>
               </div>
             </div>
           </CardHeader>
@@ -124,7 +124,7 @@ const UserCard = ({
           <CardContent className="space-y-6 p-3">
             <div>
               <h4 className="text-sm uppercase text-muted-foreground">
-                Communities Followed
+              Cộng đồng đang theo dõi
               </h4>
               <div className="max-h-72 overflow-auto">
                 {user.followed.map((c) => (
@@ -140,7 +140,7 @@ const UserCard = ({
             </div>
             <div>
               <h4 className="text-sm uppercase text-muted-foreground">
-                Communities Created
+              Cộng đồng đã tạo
               </h4>
               <div className="max-h-72 overflow-auto">
                 {user.created.map((c) => (
@@ -159,14 +159,13 @@ const UserCard = ({
       </TooltipProvider>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Bạn có chắc chắc xoá không?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete this
-            account.
+          Hành động này sẽ bị xoá vĩnh viễn và không được khôi phục.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>Huỷ</AlertDialogCancel>
           <AlertDialogAction asChild>
             <Button
               disabled={isLoading}
@@ -175,7 +174,7 @@ const UserCard = ({
               onClick={() => handleDelete()}
             >
               {isLoading && <Loader2 className="mr-2 size-5 animate-spin" />}
-              Sure
+              Xoá
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>

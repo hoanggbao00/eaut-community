@@ -11,7 +11,7 @@ const BackToCommunity = () => {
       })}
     >
       <ChevronLeft className="mr-2 h-4 w-4" />
-      Back to Community Feed
+      Quay lại trang cộng đồng
     </a>
   );
 };

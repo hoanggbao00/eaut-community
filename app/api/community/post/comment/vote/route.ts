@@ -84,7 +84,7 @@ export async function PUT(req: Request) {
       await prisma.notification.create({
         data: {
           entityId: newVote.comment.id,
-          message: "voted to your comment in",
+          message: "đã vote bình luận của bạn trong",
           senderId: session.user.id,
           type: Entity.COMMENT,
           notifierId: newVote.comment.authorId,

@@ -83,7 +83,7 @@ export async function POST(req: Request) {
       await prisma.notification.create({
         data: {
           entityId: comment.id,
-          message: "replied to your comment in",
+          message: "đã phản hồi bình luận của bạn trong",
           senderId: session.user.id,
           type: Entity.COMMENT,
           notifierId: replyAuthor.authorId,

@@ -27,7 +27,7 @@ const MiniCreatePost: FC<MiniCreatePostProps> = ({ session }) => {
 
           <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 outline outline-2 outline-white" />
         </div>
-        <Input readOnly placeholder="Create post" className="cursor-pointer"/>
+        <Input readOnly placeholder="Tạo bài viết" className="cursor-pointer"/>
         <ImageIcon className="text-zinc-600" size='26'/>
         <Link2 className="text-zinc-600" size='26'/>
       </Link>

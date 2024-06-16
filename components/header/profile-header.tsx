@@ -53,27 +53,27 @@ const ProfileHeader = ({
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href={`/user/${user.username}`}>Your Profile</Link>
+            <Link href={`/user/${user.username}`}>Trang cá nhân</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/c/create">Create Community</Link>
+            <Link href="/c/create">Tạo cộng đồng</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/settings">Settings</Link>
+            <Link href="/settings">Cài đặt</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {user.role === "ADMIN" && (
           <DropdownMenuGroup>
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger>Admin Functions</DropdownMenuSubTrigger>
+              <DropdownMenuSubTrigger>Quản trị</DropdownMenuSubTrigger>
               <DropdownMenuPortal>
                 <DropdownMenuSubContent className="!z-[51]">
                   <DropdownMenuItem asChild>
-                    <Link href="/admin/request">Manage Request</Link>
+                    <Link href="/admin/request">Quản lý yêu cầu</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/admin/category">Manage Category</Link>
+                    <Link href="/admin/category">Quản lý danh mục</Link>
                   </DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
@@ -87,7 +87,7 @@ const ProfileHeader = ({
             signOut({ callbackUrl: `${window.location.origin}` });
           }}
         >
-          Sign out
+          Đăng xuất
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

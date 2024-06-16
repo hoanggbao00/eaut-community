@@ -25,15 +25,15 @@ const UserMore = () => {
       <DropdownMenuContent align="end" className="space-y-2 p-2">
         <DropdownMenuItem onClick={handleClick}>
           <Share className="mr-2" />
-          Share
+          Chia sẻ
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleClick}>
           <UserRoundX className="mr-2" />
-          Block account
+          Chặn tài khoản
         </DropdownMenuItem>
         <DropdownMenuItem className="text-red-500" onClick={handleClick}>
           <Flag className="mr-2" />
-          Report profile
+          Báo cáo
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

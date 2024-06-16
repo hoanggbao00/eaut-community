@@ -64,7 +64,7 @@ const CreateComment: FC<CreateCommentProps> = ({
 
   return (
     <div className="w-full">
-      <Label htmlFor="comment">Your comment</Label>
+      <Label htmlFor="comment">Bình luận của bạn</Label>
       <div className="mt-2">
         <div className="relative">
           <div className="relative w-full">
@@ -73,7 +73,7 @@ const CreateComment: FC<CreateCommentProps> = ({
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={
-                user ? "What are your thoughts?" : "Sign in to comment"
+                user ? "Bạn nghĩ gì về chủ đề này?" : "Đăng nhập để tham gia thảo luận về chủ đề này"
               }
               className="w-full resize-none rounded-md border p-2"
               onKeyDown={handleCtrlEnter}
@@ -87,7 +87,7 @@ const CreateComment: FC<CreateCommentProps> = ({
 
           <div className="flex items-center justify-end sm:justify-between">
             <p className="mt-2 hidden text-xs leading-[0.5rem] text-gray-500 sm:block">
-              Press
+              Nhấn
               <kbd className="ml-1 rounded-md border bg-muted px-1 uppercase">
                 Ctrl
               </kbd>
@@ -95,10 +95,10 @@ const CreateComment: FC<CreateCommentProps> = ({
               <kbd className="mr-1 rounded-md border bg-muted px-1 uppercase">
                 Enter
               </kbd>
-              to submit your comment.
+              để gửi bình luận của bạn.
             </p>
             <Button onClick={handleComment} size="sm" disabled={!input}>
-              Send
+            Gửi
             </Button>
           </div>
           {!user && (

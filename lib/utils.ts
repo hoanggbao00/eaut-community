@@ -9,22 +9,22 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 const formatDistanceLocale = {
-  lessThanXSeconds: "just now",
-  xSeconds: "just now",
-  halfAMinute: "just now",
-  lessThanXMinutes: "{{count}}m",
-  xMinutes: "{{count}}m",
-  aboutXHours: "{{count}}h",
-  xHours: "{{count}}h",
-  xDays: "{{count}}d",
-  aboutXWeeks: "{{count}}w",
-  xWeeks: "{{count}}w",
-  aboutXMonths: "{{count}}m",
-  xMonths: "{{count}}m",
-  aboutXYears: "{{count}}y",
-  xYears: "{{count}}y",
-  overXYears: "{{count}}y",
-  almostXYears: "{{count}}y",
+  lessThanXSeconds: "mới đây",
+  xSeconds: "mới đây",
+  halfAMinute: "mới đây",
+  lessThanXMinutes: "{{count}} phút",
+  xMinutes: "{{count}} phút",
+  aboutXHours: "{{count}} giờ",
+  xHours: "{{count}} giờ",
+  xDays: "{{count}} ngày",
+  aboutXWeeks: "{{count}} tuần",
+  xWeeks: "{{count}} tuần",
+  aboutXMonths: "{{count}} tháng",
+  xMonths: "{{count}} tháng",
+  aboutXYears: "{{count}} năm",
+  xYears: "{{count}} năm",
+  overXYears: "{{count}} năm",
+  almostXYears: "{{count}} năm",
 };
 
 function formatDistance(token: string, count: number, options?: any): string {
@@ -36,10 +36,10 @@ function formatDistance(token: string, count: number, options?: any): string {
 
   if (options.addSuffix) {
     if (options.comparison > 0) {
-      return "in " + result;
+      return "trong " + result;
     } else {
-      if (result === "just now") return result;
-      return result + " ago";
+      if (result === "mới đây") return result;
+      return result + " trước";
     }
   }
 
