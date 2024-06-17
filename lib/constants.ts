@@ -1,5 +1,5 @@
 // 2 to demonstrate infinite scroll, should be higher in production
-export const INFINITE_SCROLL_PAGINATION_RESULTS = 5;
+export const INFINITE_SCROLL_PAGINATION_RESULTS = 6;
 const PROTOCOL =
   process.env.NEXT_PUBLIC_VERCEL_ENV === "development" ? "http://" : "https://";
 export const BASE_API_URL = PROTOCOL + process.env.NEXT_PUBLIC_VERCEL_URL;
