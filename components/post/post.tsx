@@ -142,7 +142,7 @@ const Post: FC<PostProps> = ({
                 <img
                   src={post.attachment}
                   alt="post attachment"
-                  className="rounded-md w-full"
+                  className="rounded-md w-full max-h-[500px] object-contain"
                 />
             ))}
         </article>
