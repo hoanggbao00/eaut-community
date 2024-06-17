@@ -1,4 +1,4 @@
-import { API_RESPONSES, NOTI_MESSAGES, NOTIFICATION_MESSAGE, STATUS_CODE } from "@/lib/constants";
+import { API_RESPONSES, NOTI_MESSAGES, STATUS_CODE } from "@/lib/constants";
 import { getAuthSession } from "@/lib/auth";
 import prisma from "@/lib/db/prisma";
 import { NextRequest, NextResponse } from "next/server";
