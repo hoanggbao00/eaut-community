@@ -45,7 +45,7 @@ const page = async () => {
             />
           ))
         ) : (
-          <p>Nothing to show</p>
+          <p>Không có gì để hiển thị</p>
         )}
       </div>
     </TooltipProvider>

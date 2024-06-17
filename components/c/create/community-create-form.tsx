@@ -108,7 +108,7 @@ const CreateForm = ({
 
       if (Object.keys(payload).length === 0)
         return toast({
-          title: "Nothing change",
+          title: "Không có gì thay đổi",
           variant: "warning",
         });
 
@@ -116,25 +116,25 @@ const CreateForm = ({
       else await axios.post("/api/community", payload);
 
       toast({
-        title: `Request to ${
-          community ? "Update" : "Create"
-        } ${name} has sent!`,
+        title: `Yêu cầu ${
+          community ? "cập nhật" : "chỉnh sửa"
+        } ${name} đã được gửi tới quản trị!`,
         variant: "success",
       });
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === STATUS_CODE.DUPLICATE) {
           return toast({
-            title: `Failed to create community !`,
-            description: `Already exist community named ${name}`,
+            title: `Xảy ra lỗi khi tạo cộng đồng !`,
+            description: `Đã tồn tại cộng đồng c/${name}`,
             variant: "destructive",
           });
         }
 
         if (error.response?.status === STATUS_CODE.UNAUTHORIZED) {
           return toast({
-            title: `Failed to create community !`,
-            description: `Please sign in to before continue.`,
+            title: `Xảy ra lỗi khi tạo cộng đồng !`,
+            description: `Vui lòng đăng nhập để tiếp tục.`,
             variant: "destructive",
           });
         }
@@ -175,9 +175,9 @@ const CreateForm = ({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Community Name</FormLabel>
+                  <FormLabel>Tên cộng đồng</FormLabel>
                   <FormDescription>
-                    Community names including capitalization cannot be changed.
+                    Tên cộng đồng sẽ không được thay đổi về sau.
                   </FormDescription>
                   <div className="relative">
                     <p className="absolute inset-y-0 left-0 z-[1] flex w-8 items-center justify-center text-sm text-zinc-400">
@@ -186,7 +186,7 @@ const CreateForm = ({
                     <FormControl className="relative">
                       <Input
                         {...field}
-                        placeholder="Community Name"
+                        placeholder="Tên cộng đồng"
                         className="pl-6"
                       />
                     </FormControl>
@@ -208,7 +208,7 @@ const CreateForm = ({
                   {/* @ts-ignore for ignore field null value and onchange*/}
                   <Textarea
                     className="mt-2 resize-none"
-                    placeholder="Community description. You can add or change this later"
+                    placeholder="Giới thiệu về cộng đồng, bạn có thể bỏ trống và thay đổi nó sau."
                     {...field}
                   />
                 </FormControl>
@@ -222,15 +222,15 @@ const CreateForm = ({
             name="categoryId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Category</FormLabel>
-                <FormDescription>Filter your community</FormDescription>
+                <FormLabel>Danh mục</FormLabel>
+                <FormDescription>Chọn danh mục cho cộng đồng của bạn</FormDescription>
                 <FormControl>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={community?.categoryId || ""}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Pick a category" />
+                      <SelectValue placeholder="Danh mục" />
                     </SelectTrigger>
                     <SelectContent>
                       {categories?.map((c) => (
@@ -250,10 +250,10 @@ const CreateForm = ({
           <div className="space-y-4">
             <div>
               <h2 className="text-sm font-medium leading-none">
-                Community Rules
+                Luật của cộng đồng
               </h2>
               <p className="text-sm text-muted-foreground">
-                Add rules to your community
+                Thêm luật để bạn quản lý cộng đồng của mình.
               </p>
             </div>
             {fields.map((field, index) => (
@@ -280,7 +280,7 @@ const CreateForm = ({
                       </div>
                       <FormControl>
                         {/* @ts-ignore for ignore field null value and onchange*/}
-                        <Input {...field} placeholder={`Rule title`} />
+                        <Input {...field} placeholder='Tiêu đề luật' />
                       </FormControl>
                     </FormItem>
                   )}
@@ -294,7 +294,7 @@ const CreateForm = ({
                         {/* @ts-ignore for ignore field null value and onchange*/}
                         <TextareaAutoSize
                           {...field}
-                          placeholder="Detail about this rule"
+                          placeholder="Chi tiết về luật này"
                           className="w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground"
                         />
                       </FormControl>
@@ -309,12 +309,12 @@ const CreateForm = ({
               size="sm"
               onClick={() => append({ title: "", detail: "" })}
             >
-              Add Rule
+              Thêm luật
             </Button>
           </div>
           <Button disabled={isLoading} type="submit" className="w-full">
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Submit
+            Gửi yêu cầu
           </Button>
         </form>
       </Form>

@@ -13,22 +13,22 @@ const TriggerList = ({ isPermission }: { isPermission: boolean }) => {
   return (
     <>
       <TabsTrigger value="feed" onClick={() => handleTrigger("feed")}>
-        Feed
+        Trang chính
       </TabsTrigger>
       <TabsTrigger
         value="about"
         onClick={() => handleTrigger("about")}
         className="lg:hidden"
       >
-        About
+        Thông tin
       </TabsTrigger>
       {isPermission && (
         <TabsTrigger onClick={() => handleTrigger("followers")} value="followers">
-          Followers
+          Theo dõi
         </TabsTrigger>
       )}
       <TabsTrigger value="moderators" onClick={() => handleTrigger("moderators")}>
-        Moderators
+        Kiểm duyệt viên
       </TabsTrigger>
     </>
   );

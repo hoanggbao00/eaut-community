@@ -1,5 +1,5 @@
 import { getAuthSession } from "@/lib/auth";
-import { API_RESPONSES, STATUS_CODE } from "@/lib/constants";
+import { API_RESPONSES, NOTI_MESSAGES, STATUS_CODE } from "@/lib/constants";
 import { isAdmin } from "@/lib/db/db";
 import prisma from "@/lib/db/prisma";
 import { NextRequest, NextResponse } from "next/server";
@@ -75,7 +75,7 @@ export async function PUT(req: NextRequest) {
         type: "COMMUNITY",
         senderId: userId,
         notifierId: request.senderId,
-        message: `reject your request to ${request.requestType.toLowerCase()}`,
+        message: `${NOTI_MESSAGES.REJECTED} tạo ${request.requestType.toLowerCase()}`,
         communityName: community.name,
       },
     });

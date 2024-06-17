@@ -70,7 +70,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
       else await axios.put("/api/request/reject", payload);
 
       toast({
-        title: `Request ${type === RequestStatus.ACCEPTED ? "Approved!" : "Rejected!"}`,
+        title: `Yêu cầu ${type === RequestStatus.ACCEPTED ? "Chấp thuận!" : "Từ chối!"}`,
       });
       setTimeout(() => {
         router.refresh();
@@ -124,7 +124,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
             )}
           </CardTitle>
           <CardDescription>
-            Requested by
+            Gửi bởi 
             <TooltipTrigger asChild>
               <a
                 className="ml-1 font-medium text-foreground underline"
@@ -156,27 +156,27 @@ const RequestItem: React.FC<RequestItemProps> = ({
         >
           <CardContent className="p-3">
             <p>
-              User <b>u/{user.username}</b> has request to{" "}
-              {request.requestType.toLowerCase()} community.
+              <b>u/{user.username}</b> gửi yêu cầu {" "}
+              {request.requestType.toUpperCase()} cộng đồng.
             </p>
             <p>{!request.updateBy && " Let's review it"}</p>
             {newContent && request.requestType === "UPDATE" && (
               <div className="divide-y-2 border-t-2 text-sm text-yellow-800">
                 {newContent.categoryName && (
-                  <p>Change category to: {newContent.categoryName}</p>
+                  <p>Thay đổi danh mục: {newContent.categoryName}</p>
                 )}
                 {newContent.description && (
-                  <p>Change description to: {newContent.description}</p>
+                  <p>Thay đổi giới thiệu: {newContent.description}</p>
                 )}
                 {newContent.rules && (
                   <div>
-                    <p>Change rules to: </p>
+                    <p>Thay đổi điều luật: </p>
                     {newContent.rules.map((rule, index) => (
                       <div key={`${request.id}-rule${index}`}>
                         <p>
                           {index + 1}: {rule.title}
                         </p>
-                        {rule.detail && <p>Detail: {rule.detail}</p>}
+                        {rule.detail && <p>Chi tiết: {rule.detail}</p>}
                       </div>
                     ))}
                   </div>
@@ -194,7 +194,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
               {isLoading.approve && (
                 <Loader2 className="mr-2 size-4 animate-spin" />
               )}
-              Approve
+              Chấp thuận
             </Button>
             <Button
               disabled={isLoading.reject}
@@ -204,7 +204,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
               {isLoading.reject && (
                 <Loader2 className="mr-2 size-4 animate-spin" />
               )}
-              Reject
+              Từ chối
             </Button>
           </CardFooter>
         )}

@@ -10,7 +10,7 @@ const Page = async () => {
     <div className="mx-auto flex h-full max-w-3xl items-center">
       <div className="w-full">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold">Create a Community</h1>
+          <h1 className="text-xl font-semibold">Tạo cộng đồng</h1>
           <div>
             <BackRoute className="mr-2 inline-block w-fit" />
           </div>

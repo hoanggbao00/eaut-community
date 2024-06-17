@@ -1,5 +1,5 @@
 import { getAuthSession } from "@/lib/auth";
-import { API_RESPONSES, STATUS_CODE } from "@/lib/constants";
+import { API_RESPONSES, NOTI_MESSAGES, STATUS_CODE } from "@/lib/constants";
 import { isAdmin } from "@/lib/db/db";
 import prisma from "@/lib/db/prisma";
 import { ActionType } from "@prisma/client";
@@ -94,7 +94,7 @@ export async function PUT(req: NextRequest) {
           senderId: userId,
           notifierId: request.senderId,
           entityId: community.id,
-          message: "approved your request to create",
+          message: `${NOTI_MESSAGES.ACCEPTED} tạo`,
           communityName: community.name,
         },
       });
@@ -151,7 +151,7 @@ export async function PUT(req: NextRequest) {
           senderId: userId,
           notifierId: request.senderId,
           entityId: community!.id,
-          message: "approved your update request for",
+          message: NOTI_MESSAGES.ACCEPTED,
           communityName: community.name,
         },
       });

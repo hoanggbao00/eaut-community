@@ -1,5 +1,5 @@
 import { getAuthSession } from "@/lib/auth";
-import { API_RESPONSES, STATUS_CODE } from "@/lib/constants";
+import { API_RESPONSES, NOTI_MESSAGES, STATUS_CODE } from "@/lib/constants";
 import prisma from "@/lib/db/prisma";
 import { Entity } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     await prisma.notification.create({
       data: {
         entityId: communityId,
-        message: "has followed",
+        message: NOTI_MESSAGES.HAS_FOLLOWED,
         senderId: session.user.id,
         type: Entity.COMMUNITY,
         notifierId: follow.community.creatorId,

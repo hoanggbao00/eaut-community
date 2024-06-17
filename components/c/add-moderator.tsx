@@ -123,13 +123,13 @@ const AddModerator = ({
           variant: "outline",
         })}
       >
-        Manage Moderator
+        Quản lý
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Moderator Management</DialogTitle>
+          <DialogTitle>Quản lý kiểm duyệt</DialogTitle>
           <DialogDescription>
-            Note: Please check all again before hit Update!
+            Chắc chắn kiểm tra thật kỹ trước khi gửi!
           </DialogDescription>
         </DialogHeader>
         {selectItem && (
@@ -189,23 +189,23 @@ const AddModerator = ({
               </Button>
             ))}
             {!query && (
-              <p className="py-2 text-center">Results will show here</p>
+              <p className="py-2 text-center">Kết quả tìm kiếm sẽ hiển thị ở đây</p>
             )}
             {isSearching && query && (
-              <p className="py-2 text-center">Searching...</p>
+              <p className="py-2 text-center">Đang tìm kiếm...</p>
             )}
             {!isSearching && query && searchData && (
-              <p className="py-2 text-center">No result found.</p>
+              <p className="py-2 text-center">Không tim thấy kết quả.</p>
             )}
           </div>
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant="outline">Đóng</Button>
           </DialogClose>
           <Button onClick={handleSave} disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
-            Update
+            Cập nhật
           </Button>
         </DialogFooter>
       </DialogContent>

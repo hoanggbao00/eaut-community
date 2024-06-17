@@ -1,5 +1,5 @@
 import { getAuthSession } from "@/lib/auth";
-import { STATUS_CODE } from "@/lib/constants";
+import { NOTI_MESSAGES, STATUS_CODE } from "@/lib/constants";
 import prisma from "@/lib/db/prisma";
 import { CommentValidator } from "@/lib/validators/comment";
 import { Entity } from "@prisma/client";
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
     await prisma.notification.create({
       data: {
         entityId: comment.id,
-        message: "has comment to your post in",
+        message: NOTI_MESSAGES.COMMENT_POST,
         senderId: session.user.id,
         type: Entity.COMMENT,
         notifierId: post.authorId,
@@ -83,7 +83,7 @@ export async function POST(req: Request) {
       await prisma.notification.create({
         data: {
           entityId: comment.id,
-          message: "đã phản hồi bình luận của bạn trong",
+          message: NOTI_MESSAGES.REPLY_COMMENT,
           senderId: session.user.id,
           type: Entity.COMMENT,
           notifierId: replyAuthor.authorId,
@@ -96,7 +96,7 @@ export async function POST(req: Request) {
       await prisma.notification.createMany({
         data: post.notifierIds.map((userId) => ({
           entityId: comment.id,
-          message: "comment post your followed in",
+          message: NOTI_MESSAGES.COMMENT_POST_OTHER,
           senderId: session.user.id,
           type: Entity.COMMENT,
           notifierId: userId,

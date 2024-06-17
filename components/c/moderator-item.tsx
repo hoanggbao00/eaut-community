@@ -27,7 +27,7 @@ const ModeratorItem = ({ mod, showTime }: props) => {
       </div>
       {showTime && (
         <span className="text-xs">
-          Authorized from:{" "}
+          Ủy quyền ngày:{" "}
           {formatDate(new Date(mod.createdDate).toISOString(), false)}
         </span>
       )}

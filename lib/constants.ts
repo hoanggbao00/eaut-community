@@ -40,22 +40,21 @@ export const ACTION_RETURN = {
   ERROR: { message: "Some thing went wrong", status: 500 },
 };
 
-export const NOTIFICATION_MESSAGE = [
-  "NULL",
-  // COMMUNITY
-  "request to create a community",
-  "request to update community",
-  "accepted your request",
-  "rejected your request",
-
-  // POST
-  "has created a post in",
-  "has updated post",
-  "has voted to your post",
-
-  // COMMENT
-  "add new comment to your post",
-  "updated comment",
-  "voted to your comment",
-  "replied your comment",
-];
+export const NOTI_MESSAGES = {
+  REQUEST_CREATE: "yêu cầu tạo cộng đồng",
+  REQUEST_UPDATE: "yêu cầu cập nhật cộng đồng",
+  ACCEPTED: "đã chấp nhận yêu cầu",
+  REJECTED: "đã từ chối yêu cầu",
+  HAS_FOLLOWED: "đã theo dõi",
+  ADD_MODERATOR: "thêm bạn làm kiểm duyệt của ",
+  REMOVE_MODERATOR: "thu hồi quyền kiểm duyệt của bạn trong",
+  REMOVE_POST: "xóa bài viết",
+  YOUR_IN: "của bạn trong",
+  POST_FOLLOW_UPDATED: "bài viết bạn theo dỗi vừa được cập nhật",
+  COMMENT_POST: "bình luận vào bài viết của bạn trong",
+  COMMENT_POST_OTHER: "bình luận vào bài viết bạn đang theo dõi trong",
+  REPLY_COMMENT: "đã phản hồi bình luận của bạn trong",
+  COMMENT_VOTE: "đã vote bình luận của bạn trong",
+  POST_ADD: "thêm bài viết trong",
+  POST_VOTE: "vote bài viết của bạn trong"
+}

@@ -99,7 +99,7 @@ const CommunityAlerts = ({
     (alertData.length === 0 || isPermission) && (
       <Collapsible className="space-y-2 rounded-md border" defaultOpen={true}>
         <CollapsibleTrigger className="flex w-full items-center justify-center gap-2 p-1 hover:bg-foreground/10">
-          Community Alert
+          Thông báo của cộng đồng
           <ChevronsUpDown size="16" />
         </CollapsibleTrigger>
         <CollapsibleContent className="space-y-2 pb-1">
@@ -123,7 +123,7 @@ const CommunityAlerts = ({
                   <Input
                     type="text"
                     className="flex-1"
-                    placeholder="Alert content..."
+                    placeholder="Nội dung thông báo..."
                     ref={inputRef}
                     onKeyDown={(e) => {
                       if (e.key !== "Enter") return;
@@ -145,7 +145,7 @@ const CommunityAlerts = ({
                 onClick={handleAddAlert}
               >
                 {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
-                {isAdding ? "Submit" : "Add Alert"}
+                {isAdding ? "Gửi" : "Thêm mới"}
               </Button>
             </div>
           )}

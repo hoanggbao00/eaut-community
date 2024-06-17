@@ -17,7 +17,7 @@ const BackRoute = ({ className }: { className?: string }) => {
       )}
     >
       <ChevronLeft className="inline-block h-5 w-5" />
-      <span>Back</span>
+      <span>Quay lại</span>
     </Button>
   );
 };

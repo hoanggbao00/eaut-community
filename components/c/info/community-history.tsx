@@ -17,11 +17,11 @@ const CommunityHistory = ({ history }: { history: UpdateHistory[] }) => {
   return (
     <Dialog key={'history-dialog'}>
       <DialogTrigger className="w-full p-1 text-left hover:bg-foreground/10">
-        Update History
+        Lịch sử chỉnh sửa
       </DialogTrigger>
       <DialogContent className="gap-2 bg-background p-2">
         <DialogHeader className="text-lg font-medium">
-          Update History
+          Lịch sử chỉnh sửa
         </DialogHeader>
         <div className="max-h-[70dvh] space-y-3 overflow-auto">
           {history.map((h) => {
@@ -34,20 +34,20 @@ const CommunityHistory = ({ history }: { history: UpdateHistory[] }) => {
                   {formatDate(h.createdAt, "MMM dd, yyyy")}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Modified by: {h.updatedBy}
+                  Cập nhật: {h.updatedBy}
                 </p>
-                <p className="mt-1 border-t-2 text-xs">Changes: </p>
+                <p className="mt-1 border-t-2 text-xs">Thay đổi: </p>
                 <div className="space-y-1">
                   {keys.map((key, index) => {
                     if (key === "rules") {
                       return (
                         <div className="text-sm" key={`${h.id}#${key}`}>
-                          <p>Rules: </p>
+                          <p>Điều luật: </p>
                           {h.newContent.rules.map((rule, index) => (
                             <div key={"rule"+h.id + index} className="pl-3">
                               <p className="space-x-1">
                                 <span>
-                                  {!h.oldContent.rules[index] && "Add "}
+                                  {!h.oldContent.rules[index] && "Thêm "}
                                   {index + 1}:
                                 </span>
                                 <span className="text-muted-foreground line-through">
@@ -64,7 +64,7 @@ const CommunityHistory = ({ history }: { history: UpdateHistory[] }) => {
                               </p>
                               {rule.detail && (
                                 <p className="space-x-1 pl-2">
-                                  <span>Detail:</span>
+                                  <span>Chi tiết:</span>
                                   <span className="text-muted-foreground line-through">
                                     {h.oldContent.rules[index] &&
                                       h.oldContent.rules[index].detail}
@@ -102,7 +102,7 @@ const CommunityHistory = ({ history }: { history: UpdateHistory[] }) => {
         </div>
         <DialogFooter>
           <DialogClose className={buttonVariants({ variant: "outline" })}>
-            Close
+            Đóng
           </DialogClose>
         </DialogFooter>
       </DialogContent>

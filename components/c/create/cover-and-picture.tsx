@@ -75,7 +75,7 @@ const CoverAndPicture: React.FC<Props> = ({ cover, image, initImage }) => {
             className="flex h-full cursor-pointer flex-col items-center justify-center font-light"
           >
             <ImagePlus size="26" />
-            Upload community cover
+            Tải ảnh bìa lên
           </label>
 
           {cover.file && (

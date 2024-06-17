@@ -126,11 +126,11 @@ export const SubmitForm: React.FC<SubmitFormProps> = ({ communities }) => {
             name="title"
             render={({ field }) => (
               <FormItem className="mb-2">
-                <FormLabel>Title</FormLabel>
+                <FormLabel>Tiêu đề</FormLabel>
                 <FormControl>
                   <TextareaAutoSize
                     {...field}
-                    placeholder="Title"
+                    placeholder="Tiêu đề"
                     className="w-full resize-none rounded-md border border-input px-2 py-2 text-2xl font-bold focus:outline-none"
                   />
                 </FormControl>
@@ -166,7 +166,7 @@ export const SubmitForm: React.FC<SubmitFormProps> = ({ communities }) => {
             name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Content</FormLabel>
+                <FormLabel>Nội dung</FormLabel>
                 <NovelEditor onChange={(event) => field.onChange(event)} />
               </FormItem>
             )}
@@ -174,11 +174,11 @@ export const SubmitForm: React.FC<SubmitFormProps> = ({ communities }) => {
 
           <div className="mt-2 flex items-center justify-end md:justify-between">
             <p className="mt-2 hidden text-sm text-gray-500 md:block">
-              Use
+              Nhập
               <kbd className="rounded-md border bg-muted px-1 text-xs uppercase">
                 /
               </kbd>
-              to open the command menu.
+              để mở lệnh trình soạn thảo.
             </p>
 
             {/* Select community */}
@@ -196,7 +196,7 @@ export const SubmitForm: React.FC<SubmitFormProps> = ({ communities }) => {
             variant="default"
           >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Post
+            Gửi bài viết
           </Button>
           {isYoutubeValid && (
             <div className="my-2">

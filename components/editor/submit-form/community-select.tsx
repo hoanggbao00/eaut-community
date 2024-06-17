@@ -54,11 +54,11 @@ const CommunitySelect: React.FC<props> = ({
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Choose Community" />
+                  <SelectValue placeholder="Chọn cộng đồng" />
                 </SelectTrigger>
                 <SelectGroup>
                   <SelectContent className="z-[100]" align="end">
-                    <SelectLabel>Followed Community</SelectLabel>
+                    <SelectLabel>Cộng đồng</SelectLabel>
                     <SelectSeparator />
                     {communities.map((c) => (
                       <SelectItem key={c.community.id} value={c.community.id}>

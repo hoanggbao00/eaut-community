@@ -1,4 +1,5 @@
 import { getAuthSession } from "@/lib/auth";
+import { NOTI_MESSAGES } from "@/lib/constants";
 import prisma from "@/lib/db/prisma";
 import { CommentVoteValidator } from "@/lib/validators/vote";
 import { Entity } from "@prisma/client";
@@ -84,7 +85,7 @@ export async function PUT(req: Request) {
       await prisma.notification.create({
         data: {
           entityId: newVote.comment.id,
-          message: "đã vote bình luận của bạn trong",
+          message: NOTI_MESSAGES.COMMENT_VOTE,
           senderId: session.user.id,
           type: Entity.COMMENT,
           notifierId: newVote.comment.authorId,

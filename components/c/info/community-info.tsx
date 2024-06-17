@@ -81,7 +81,7 @@ const CommunityInfo: React.FC<CommunityInfoProps> = ({
         >
           <CardHeader className="relative py-0">
             <p className="-ml-4 pb-0 pt-3 text-xs font-semibold text-muted-foreground">
-              ABOUT
+              THÔNG TIN CỘNG ĐỒNG
             </p>
             <DropdownMenuTrigger className="absolute right-1 top-0">
               <Ellipsis className="h-5 w-6 text-gray-500 hover:text-foreground" />
@@ -98,13 +98,13 @@ const CommunityInfo: React.FC<CommunityInfoProps> = ({
             <CardDescription>{community.description}</CardDescription>
             <dl className="divide-y divide-muted-foreground bg-background text-sm leading-6">
               <div className="flex justify-between gap-x-4 py-3">
-                <dt className="text-muted-foreground">Created</dt>
+                <dt className="text-muted-foreground">Ngày tạo</dt>
                 <dd className="text-muted-foreground">
                   <time>{format(community.createdAt, "MMMM d, yyyy")}</time>
                 </dd>
               </div>
               <div className="flex justify-between gap-x-4 py-3">
-                <dt className="text-muted-foreground">Members</dt>
+                <dt className="text-muted-foreground">Theo dõi</dt>
                 <dd className="flex items-start gap-x-2">
                   <div className="text-muted-foreground">
                     {community._count.followers}
@@ -113,7 +113,7 @@ const CommunityInfo: React.FC<CommunityInfoProps> = ({
               </div>
               {role === "ADMIN" && (
                 <div className="flex justify-between gap-x-4 py-3">
-                  <dt className="text-muted-foreground">Created by</dt>
+                  <dt className="text-muted-foreground">Tạo bởi</dt>
                   <dd className="flex items-start gap-x-2">
                     <a
                       href={`/user/${creator?.username}`}
@@ -126,7 +126,7 @@ const CommunityInfo: React.FC<CommunityInfoProps> = ({
               )}
               {creator?.id === userId && (
                 <p className="pt-1 text-center text-lg">
-                  You created this community
+                  Bạn là người khởi tạo cộng đồng này
                 </p>
               )}
             </dl>
@@ -134,12 +134,12 @@ const CommunityInfo: React.FC<CommunityInfoProps> = ({
           <Separator className="mt-3" />
           <CardContent className="px-2">
             <p className="-ml-1 pb-1 pt-3 text-xs font-semibold text-muted-foreground">
-              RULES
+              ĐIỀU LUẬT
             </p>
             {community.rules ? (
               <CommunityRules rules={community.rules as Rules[]} />
             ) : (
-              <p>This community has no rule</p>
+              <p>Cộng đồng này chưa có điều luật</p>
             )}
           </CardContent>
         </Card>

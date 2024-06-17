@@ -1,5 +1,5 @@
 import { getAuthSession } from "@/lib/auth";
-import { API_RESPONSES, STATUS_CODE } from "@/lib/constants";
+import { API_RESPONSES, NOTI_MESSAGES, STATUS_CODE } from "@/lib/constants";
 import { isAdmin, isCreator, isModerator } from "@/lib/db/db";
 import prisma from "@/lib/db/prisma";
 import { Entity, UserRole } from "@prisma/client";
@@ -81,7 +81,7 @@ export async function DELETE(
           senderId: userId,
           notifierId: existsPost.authorId,
           entityId: existsPost.communityId,
-          message: `has deleted your post "${existsPost.title}" in`,
+          message: `${NOTI_MESSAGES.REMOVE_POST} ${existsPost.title} ${NOTI_MESSAGES.YOUR_IN}`,
           communityName: existsPost.community.name,
         },
       });
@@ -185,7 +185,7 @@ export async function PUT(
           type: Entity.POST,
           senderId: userId,
           entityId: existsPost.id,
-          message: `your post you follow has updated`,
+          message: NOTI_MESSAGES.POST_FOLLOW_UPDATED,
           notifierId: existsPost.authorId,
           communityName: existsPost.community.name,
         },
@@ -199,7 +199,7 @@ export async function PUT(
           type: Entity.POST,
           senderId: userId,
           entityId: existsPost.id,
-          message: `your post you follow has updated`,
+          message: NOTI_MESSAGES.POST_FOLLOW_UPDATED,
           notifierId: id,
           communityName: existsPost.community.name,
         })),

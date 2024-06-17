@@ -65,17 +65,17 @@ const PostMore = ({
             <Ellipsis className="h-5 w-6 text-gray-500 hover:text-foreground" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="" align="end">
-            <DropdownMenuItem className="text-red-500">Report</DropdownMenuItem>
+            <DropdownMenuItem className="text-red-500">Báo cáo</DropdownMenuItem>
             {permission && (
               <>
                 <AlertDialogTrigger asChild>
                   <DropdownMenuItem key="delete-action">
-                    Delete
+                    Xóa
                   </DropdownMenuItem>
                 </AlertDialogTrigger>
                 <DropdownMenuItem asChild>
                   <Link href={`/c/${communityName}/post/${postId}?edit=true`}>
-                    Edit
+                    Chỉnh sửa
                   </Link>
                 </DropdownMenuItem>
               </>
@@ -86,14 +86,13 @@ const PostMore = ({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure to{" "}
-              <span className="font-semibold text-red-500">Delete</span> this
-              post?. This action will not be undone.
+              Bạn có chắc chắn 
+              <span className="font-semibold text-red-500">Xóa</span> bài viết này không? Hành động này sẽ không được khôi phục.
             </AlertDialogDescription>
           </AlertDialogHeader>
 
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Quay lại</AlertDialogCancel>
             <AlertDialogAction
               className={buttonVariants({
                 variant: "destructive",
@@ -101,7 +100,7 @@ const PostMore = ({
               })}
               onClick={handleDelete}
             >
-              Delete
+              Xóa
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

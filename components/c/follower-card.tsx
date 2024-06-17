@@ -40,14 +40,14 @@ const FollowerCard = ({ item }: props) => {
         </div>
       </a>
       <time className="text-sm text-muted-foreground">
-        Followed from: {formatDate(item.createdDate.toISOString())}
+        Theo dõi ngày: {formatDate(item.createdDate.toISOString())}
       </time>
       <Separator className="my-2" />
 
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <p className="font-medium">Activity:</p>
-        <span>{item.user._count.post} post |</span>
-        <span>{item.user._count.comment} comment |</span>
+        <p className="font-medium">Điểm:</p>
+        <span>{item.user._count.post} bài viết |</span>
+        <span>{item.user._count.comment} bình luận |</span>
         <span>
           {item.user._count.postVote + item.user._count.commentVote} vote
         </span>

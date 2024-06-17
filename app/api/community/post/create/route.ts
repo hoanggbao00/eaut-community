@@ -1,5 +1,5 @@
 import { getAuthSession } from "@/lib/auth";
-import { API_RESPONSES, STATUS_CODE } from "@/lib/constants";
+import { API_RESPONSES, NOTI_MESSAGES, STATUS_CODE } from "@/lib/constants";
 import prisma from "@/lib/db/prisma";
 import { Entity, VoteType } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
       await prisma.notification.createMany({
         data: notifierIds.map((id) => ({
           entityId: post.id,
-          message: "added a post in",
+          message: NOTI_MESSAGES.POST_ADD,
           senderId: session.user.id,
           type: Entity.POST,
           notifierId: id,

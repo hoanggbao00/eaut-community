@@ -28,7 +28,7 @@ const AttachmentButton: React.FC<props> = ({
 
     if (!isValid)
       return toast({
-        title: "Invalid YouTube URL",
+        title: "Link youtube không hợp lệ",
         variant: "destructive",
       });
     setPreview("");
@@ -46,14 +46,14 @@ const AttachmentButton: React.FC<props> = ({
             className: "mr-2 cursor-pointer",
           })}
         >
-          Add Image/Video
+          Đính kèm ảnh
         </Label>
       )}
       <div className="relative inline-block min-w-[300px]">
         <Input
           value={youtubeUrl}
           onChange={(e) => setYouTubeUrl(e.target.value)}
-          placeholder="or add a youtube url..."
+          placeholder="hoặc thêm youtube link..."
           type="url"
           className="w-full pr-14"
         />
@@ -64,10 +64,10 @@ const AttachmentButton: React.FC<props> = ({
           size="sm"
           type="button"
         >
-          Check
+          Kiểm tra
         </Button>
       </div>
-      {
+      {youtubeUrl && 
         <Button
           variant="outline"
           size="sm"
@@ -78,7 +78,7 @@ const AttachmentButton: React.FC<props> = ({
             setYoutubeValid(false);
           }}
         >
-          Remove
+          Xóa URL Youtube
         </Button>
       }
       <input

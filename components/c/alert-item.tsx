@@ -84,7 +84,7 @@ const AlertItem = ({
                 onClick={() => setShowMore(!showMore)}
                 className="ml-1 inline-block text-xs text-muted-foreground"
               >
-                {showMore ? "Show Less" : "...Show More"}
+                {showMore ? "Thu gọn" : "...Xem thêm"}
               </button>
             )}
           </h6>
@@ -131,19 +131,18 @@ const AlertItem = ({
             </button>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogTitle>Bạn có chắc chắn muốn xóa?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
+                  Hành đồng này sẽ không được khôi phục. Hãy để ý!
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>Hủy</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={handleDelete}
                   className={buttonVariants({ variant: "destructive" })}
                 >
-                  Yes
+                  Xóa
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

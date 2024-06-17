@@ -1,5 +1,5 @@
 import { getAuthSession } from "@/lib/auth";
-import { API_RESPONSES, STATUS_CODE } from "@/lib/constants";
+import { API_RESPONSES, NOTI_MESSAGES, STATUS_CODE } from "@/lib/constants";
 import prisma from "@/lib/db/prisma";
 import { PostVoteValidator } from "@/lib/validators/vote";
 import { Entity } from "@prisma/client";
@@ -90,7 +90,7 @@ export async function PUT(req: NextRequest) {
       await prisma.notification.create({
         data: {
           entityId: postId,
-          message: "voted your post in",
+          message: NOTI_MESSAGES.POST_VOTE,
           senderId: session.user.id,
           type: Entity.POST,
           notifierId: post.authorId,

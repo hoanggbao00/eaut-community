@@ -19,7 +19,7 @@ const EditCategory = ({ data }: { data: Category }) => {
 
   const handleEdit = async () => {
     if (!isEdit) return setEdit(true);
-    if (data.title === _title || data.icon === _icon)
+    if (data.title === _title && data.icon === _icon)
       return toast({
         title: "Nothing changed !",
         variant: "warning",

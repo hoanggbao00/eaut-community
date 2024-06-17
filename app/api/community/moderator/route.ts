@@ -1,4 +1,4 @@
-import { API_RESPONSES, STATUS_CODE } from "@/lib/constants";
+import { API_RESPONSES, NOTI_MESSAGES, NOTIFICATION_MESSAGE, STATUS_CODE } from "@/lib/constants";
 import { getAuthSession } from "@/lib/auth";
 import prisma from "@/lib/db/prisma";
 import { NextRequest, NextResponse } from "next/server";
@@ -73,7 +73,7 @@ export async function PUT(req: NextRequest) {
           senderId: session.user.id,
           notifierId: communityExists.moderators[0].userId,
           entityId: communityId,
-          message: "remove your moderator role in",
+          message: NOTI_MESSAGES.REMOVE_MODERATOR,
           communityName: communityExists.name,
         },
       });
@@ -106,7 +106,7 @@ export async function PUT(req: NextRequest) {
           senderId: session.user.id,
           notifierId: user.userId,
           entityId: communityId,
-          message: "remove your moderator role in",
+          message: NOTI_MESSAGES.REMOVE_MODERATOR,
           communityName: communityExists.name,
         })),
       });
@@ -127,7 +127,7 @@ export async function PUT(req: NextRequest) {
         senderId: session.user.id,
         notifierId: id,
         entityId: communityId,
-        message: "added you as moderator in",
+        message: NOTI_MESSAGES.ADD_MODERATOR,
         communityName: communityExists.name,
       })),
     });

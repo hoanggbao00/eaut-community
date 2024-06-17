@@ -69,7 +69,7 @@ const AddCategory = () => {
         )}
         <Button className="" onClick={handleAdd} disabled={isLoading}>
           {isLoading && <Loader2 className="mr-2 size-5 animate-spin" />}
-          {isOpen ? "Submit" : "Add New"}
+          {isOpen ? "Gửi" : "Thêm"}
         </Button>
       </div>
     </Popover>

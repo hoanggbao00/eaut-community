@@ -1,4 +1,4 @@
-import { API_RESPONSES, STATUS_CODE } from "@/lib/constants";
+import { API_RESPONSES, NOTI_MESSAGES, STATUS_CODE } from "@/lib/constants";
 import { getAuthSession } from "@/lib/auth";
 import prisma from "@/lib/db/prisma";
 import { NextRequest, NextResponse } from "next/server";
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
         communityName: body.name,
         senderId: session.user.id,
         sendTo: "ADMIN",
-        detail: "request to create community",
+        detail: NOTI_MESSAGES.REQUEST_CREATE,
         status: "PENDING",
       },
     });
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
       await prisma.notification.createMany({
         data: adminIds.map((user) => ({
           entityId: community.id,
-          message: "request to create community",
+          message: NOTI_MESSAGES.REQUEST_CREATE,
           senderId: session.user.id,
           type: "REQUEST",
           notifierId: user.id,
@@ -157,7 +157,7 @@ export async function PUT(req: NextRequest) {
         requestFor: "COMMUNITY", //
         communityId: isExists.id,
         communityName: isExists.name,
-        detail: "request to update community",
+        detail: NOTI_MESSAGES.REQUEST_UPDATE,
         newContent: { ...body },
         status: "PENDING",
       },
@@ -176,7 +176,7 @@ export async function PUT(req: NextRequest) {
       await prisma.notification.createMany({
         data: adminIds.map((user) => ({
           entityId: isExists.id,
-          message: "request to update community",
+          message: NOTI_MESSAGES.REQUEST_UPDATE,
           senderId: session.user.id,
           type: "REQUEST",
           notifierId: user.id,
