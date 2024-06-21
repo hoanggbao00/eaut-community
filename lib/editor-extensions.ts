@@ -6,8 +6,11 @@ import {
 	StarterKit,
 	Placeholder,
 	AIHighlight,
-	TiptapImage,
+	TiptapImage
 } from 'novel/extensions';
+
+import TextStyle from '@tiptap/extension-text-style';
+
 
 const aiHighlight = AIHighlight;
 //You can overwrite the placeholder with your own configuration
@@ -95,4 +98,5 @@ export const defaultExtensions = [
 	horizontalRule,
 	aiHighlight,
 	tiptapImage,
+	TextStyle
 ];

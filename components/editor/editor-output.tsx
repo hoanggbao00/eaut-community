@@ -9,7 +9,7 @@ interface EditorOutputProps {
 }
 
 function formatContent(json: any) {
-	if (!json) return '<div>Content not provided</div>';
+	if (!json) return '';
 
 	return generateHTML(json, defaultExtensions);
 }
