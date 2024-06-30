@@ -45,7 +45,7 @@ export const NOTI_MESSAGES = {
   REQUEST_UPDATE: "yêu cầu cập nhật cộng đồng",
   ACCEPTED: "đã chấp nhận yêu cầu",
   REJECTED: "đã từ chối yêu cầu",
-  HAS_FOLLOWED: "đã theo dõi",
+  HAS_FOLLOWED: "đã tham gia",
   ADD_MODERATOR: "thêm bạn làm kiểm duyệt của ",
   REMOVE_MODERATOR: "thu hồi quyền kiểm duyệt của bạn trong",
   REMOVE_POST: "xóa bài viết",

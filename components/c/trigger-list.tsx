@@ -24,7 +24,7 @@ const TriggerList = ({ isPermission }: { isPermission: boolean }) => {
       </TabsTrigger>
       {isPermission && (
         <TabsTrigger onClick={() => handleTrigger("followers")} value="followers">
-          Theo dõi
+          Thành viên
         </TabsTrigger>
       )}
       <TabsTrigger value="moderators" onClick={() => handleTrigger("moderators")}>

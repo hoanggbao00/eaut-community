@@ -40,7 +40,7 @@ const FollowerCard = ({ item }: props) => {
         </div>
       </a>
       <time className="text-sm text-muted-foreground">
-        Theo dõi ngày: {formatDate(item.createdDate.toISOString())}
+        Tham gia ngày: {formatDate(item.createdDate.toISOString())}
       </time>
       <Separator className="my-2" />
 

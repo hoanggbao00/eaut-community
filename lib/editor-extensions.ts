@@ -10,6 +10,7 @@ import {
 } from 'novel/extensions';
 
 import TextStyle from '@tiptap/extension-text-style';
+import Underline from '@tiptap/extension-underline';
 
 
 const aiHighlight = AIHighlight;
@@ -98,5 +99,6 @@ export const defaultExtensions = [
 	horizontalRule,
 	aiHighlight,
 	tiptapImage,
-	TextStyle
+	TextStyle,
+	Underline
 ];

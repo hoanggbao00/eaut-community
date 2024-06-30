@@ -104,7 +104,7 @@ const CommunityInfo: React.FC<CommunityInfoProps> = ({
                 </dd>
               </div>
               <div className="flex justify-between gap-x-4 py-3">
-                <dt className="text-muted-foreground">Theo dõi</dt>
+                <dt className="text-muted-foreground">Thành viên</dt>
                 <dd className="flex items-start gap-x-2">
                   <div className="text-muted-foreground">
                     {community._count.followers}

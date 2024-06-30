@@ -96,7 +96,7 @@ export const SubmitForm: React.FC<SubmitFormProps> = ({ communities }) => {
         ...(isYoutubeValid && { attachment: youtubeUrl }),
       };
 
-      createPost(payload);
+      await createPost(payload);
     } catch (error) {
       console.log(error);
     } finally {

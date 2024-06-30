@@ -124,7 +124,7 @@ const UserCard = ({
           <CardContent className="space-y-6 p-3">
             <div>
               <h4 className="text-sm uppercase text-muted-foreground">
-              Cộng đồng đang theo dõi
+              Cộng đồng đã tham gia
               </h4>
               <div className="max-h-72 overflow-auto">
                 {user.followed.map((c) => (
