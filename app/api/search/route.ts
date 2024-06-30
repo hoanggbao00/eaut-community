@@ -15,24 +15,42 @@ export async function GET(req: Request) {
           mode: "insensitive",
         },
       },
-      include: {
+      select: {
+        name: true,
         _count: true,
-      },
+        image: true,
+      }
     }),
     prisma.post.findMany({
       where: {
         title: {
           contains: q,
-          mode: "insensitive"
+          mode: "insensitive",
         },
       },
-      include: {
+      select: {
+        id: true,
         _count: true,
+        title: true,
         community: {
           select: {
             name: true,
-          },
-        },
+          }
+        }
+      }
+    }),
+    prisma.user.findMany({
+      where: {
+        OR: [
+          { username: { contains: q, mode: "insensitive" } },
+          { name: { contains: q, mode: "insensitive" } },
+        ],
+      },
+      select: {
+        _count: true,
+        username: true,
+        name: true,
+        image: true,
       },
     }),
   ]);

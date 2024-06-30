@@ -7,7 +7,8 @@ interface SearchResultProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const SearchResult: React.FC<SearchResultProps> = ({ heading, data }) => {
-  const type = data && data[0]?.name ? "community" : "post";
+  let type = data && (data[0]?.name ? "community" : data[0]?.username ? "user" : "post");
+
 
   return (
     data && (
@@ -15,7 +16,7 @@ const SearchResult: React.FC<SearchResultProps> = ({ heading, data }) => {
         <p className="text-sm text-muted-foreground">
           {heading} — <span className="text-xs">{data.length} kết quả</span>
         </p>
-        <div className="mt-1 space-y-2">
+        <div className="mt-1 space-y-2" key={type}>
           {data.map((item) => (
             <Link
               href={`/c/${item.name || item.community?.name}${
@@ -24,7 +25,7 @@ const SearchResult: React.FC<SearchResultProps> = ({ heading, data }) => {
               key={item.id}
               className="flex items-center gap-2 rounded-md p-2 py-1 transition-colors hover:bg-foreground/20"
             >
-              {type === "community" && (
+              {(type === "community" || type == "user") && (
                 <Image
                   src={item.image}
                   width={24}
@@ -33,8 +34,8 @@ const SearchResult: React.FC<SearchResultProps> = ({ heading, data }) => {
                 />
               )}
               <p>
-                {type === "community" ? (
-                  `c/${item.name}`
+                {(type === "community" || type == "user") ? (
+                  `${type === "user" ? "user" : "c" }/${type === "user" ? item.username : item.name}`
                 ) : (
                   <>
                     <b>{`c/${item.community.name} • `}</b>

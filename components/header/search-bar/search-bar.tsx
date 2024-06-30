@@ -1,6 +1,5 @@
 "use client";
 
-import { Prisma, Community, Post } from "@prisma/client";
 import axios from "axios";
 import { FC, useCallback, useState } from "react";
 import { Loader2 } from "lucide-react";
@@ -14,17 +13,8 @@ interface SearchBarProps {}
 const SearchBar: FC<SearchBarProps> = ({}) => {
   const [input, setInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const [communityData, setCommunityData] = useState<
-    (Community & {
-      _count: Prisma.CommunityCountOutputType;
-    })[]
-  >();
-
-  const [postData, setPostData] = useState<
-    (Post & {
-      _count: Prisma.PostCountOutputType;
-    })[]
-  >();
+  const [searchData, setSearchData] = useState<any>([]);
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleSearch = async (query: string) => {
     if (!query) return;
@@ -32,8 +22,7 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
       if (!query) return [];
       const { data } = await axios.get(`/api/search?q=${query}`);
       if (data) {
-        setCommunityData(data[0]);
-        setPostData(data[1]);
+        setSearchData(data);
       }
     } catch (error) {
     } finally {
@@ -41,7 +30,10 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
     }
   };
 
-  const debouncedHandleSearch = useCallback(useDebouncedCallback(handleSearch, 1000), [input]);
+  const debouncedHandleSearch = useCallback(
+    useDebouncedCallback(handleSearch, 1000),
+    [input],
+  );
 
   return (
     <div className="relative z-50 w-3/4 overflow-visible rounded-lg border md:w-2/3 lg:w-1/2">
@@ -51,34 +43,53 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
           debouncedHandleSearch(e.target.value);
           if (!e.target.value) {
             setIsLoading(false);
-            setCommunityData(undefined);
-            setPostData(undefined);
+            setSearchData([]);
             return;
           }
           setIsLoading(true);
         }}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         value={input}
         className="border-none outline-none focus:!border-none focus:!outline-none"
         placeholder="Tìm kiếm..."
       />
 
-      {input && <Button onClick={() => setInput("")} className='absolute top-0 right-1.5 text-xl' variant="ghost" size="icon" >&times;</Button>}
+      {input && (
+        <Button
+          onClick={() => setInput("")}
+          className="absolute right-1.5 top-0 text-xl"
+          variant="ghost"
+          size="icon"
+        >
+          &times;
+        </Button>
+      )}
       {isLoading && (
         <Loader2 className="absolute right-3 top-[22%] h-6 w-6 animate-spin" />
       )}
 
-      {input && (
-        <div className="sm:absolute sm:w-full sm:top-[120%] rounded-b-md bg-muted p-2 shadow fixed top-12 w-full left-0 h-fit">
+      {input && isFocused && (
+        <div className="fixed left-0 top-12 h-fit w-full rounded-b-md bg-muted p-2 shadow sm:absolute sm:top-[120%] sm:w-full">
           {isLoading && <div>Đang tìm kiếm...</div>}
-          {communityData && !isLoading && (
+          {searchData[0]?.length > 0 && !isLoading && (
             <SearchResult
               key={"communities"}
               heading="Cộng đồng"
-              data={communityData}
+              data={searchData[0]}
             />
           )}
-          {postData && !isLoading && (
-            <SearchResult key={"posts"} heading="Bài đăng" data={postData} />
+          {searchData[1]?.length > 0 && !isLoading && (
+            <SearchResult
+              key={"posts"}
+              heading="Bài đăng"
+              data={searchData[1]}
+            />
+          )}
+          {searchData[2]?.length > 0 && !isLoading && (
+            <>
+              <SearchResult key={"user"} heading="User" data={searchData[2]} />
+            </>
           )}
         </div>
       )}

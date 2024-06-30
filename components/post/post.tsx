@@ -121,11 +121,11 @@ const Post: FC<PostProps> = ({
           {/* content */}
           {post.content && (
             <div
-              className="relative max-h-40 w-full overflow-clip pb-2 text-sm"
+              className="relative max-h-44 w-full overflow-clip pb-2 text-sm"
               ref={pRef}
             >
               <EditorOutput content={post.content} />
-              {pRef.current?.clientHeight === 160 ? (
+              {pRef.current?.clientHeight === 150 ? (
                 // blur bottom if content is too long
                 <a href={`/c/${communityName.toLowerCase()}/post/${post.id}`} className="absolute bottom-0 left-0 grid h-24 w-full place-items-end bg-gradient-to-t from-background to-transparent">
                   <span className="display-block mx-auto font-light text-muted-foreground">

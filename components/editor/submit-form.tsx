@@ -27,6 +27,7 @@ import { uploadImage } from "@/lib/utils";
 import YoutubeEmbed from "../youtube-embed";
 import CommunitySelect from "./submit-form/community-select";
 import AttachmentButton from "./submit-form/attachment-button";
+import { revalidatePath } from "next/cache";
 
 type FormData = z.infer<typeof PostValidator>;
 
@@ -61,10 +62,10 @@ export const SubmitForm: React.FC<SubmitFormProps> = ({ communities }) => {
         });
         
         startTransition(() => {
+          window.localStorage.removeItem("novel-content");
+          revalidatePath(`/c/${communityName}`)
           router.push(`/c/${communityName}`)
         })
-
-        return window.localStorage.removeItem("novel-content");
       }
     } catch (error) {
       return toast({
