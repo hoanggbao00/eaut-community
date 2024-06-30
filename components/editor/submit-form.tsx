@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { startTransition, useState } from "react";
 import { useForm } from "react-hook-form";
 import TextareaAutoSize from "react-textarea-autosize";
 import { z } from "zod";
@@ -59,10 +59,10 @@ export const SubmitForm: React.FC<SubmitFormProps> = ({ communities }) => {
         toast({
           description: "Your post has been published.",
         });
-        const communityName = communities.find(
-          (c) => c.community.id === payload.communityId,
-        )?.community.name;
-        router.push(`/c/${communityName}`);
+        
+        startTransition(() => {
+          router.push(`/c/${communityName}`)
+        })
 
         return window.localStorage.removeItem("novel-content");
       }

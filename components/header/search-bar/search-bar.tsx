@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useDebouncedCallback } from "use-debounce";
 import SearchResult from "./search-result";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface SearchBarProps {}
 
@@ -60,6 +61,8 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
         className="border-none outline-none focus:!border-none focus:!outline-none"
         placeholder="Tìm kiếm..."
       />
+
+      {input && <Button onClick={() => setInput("")} className='absolute top-0 right-1.5 text-xl' variant="ghost" size="icon" >&times;</Button>}
       {isLoading && (
         <Loader2 className="absolute right-3 top-[22%] h-6 w-6 animate-spin" />
       )}

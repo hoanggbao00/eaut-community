@@ -107,11 +107,11 @@ export const UserNameForm = ({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Your Name</FormLabel>
-              <FormDescription>Enter your name</FormDescription>
+              <FormLabel>Tên hiển thị</FormLabel>
+              <FormDescription>Tên của bạn</FormDescription>
 
               <FormControl>
-                <Input {...field} placeholder="Name" />
+                <Input {...field} placeholder="VD: Cánh cụt công nghệ" />
               </FormControl>
             </FormItem>
           )}
@@ -123,16 +123,16 @@ export const UserNameForm = ({
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Your Username</FormLabel>
+              <FormLabel>Username của bạn</FormLabel>
               <FormDescription>
-                Please enter a display name you are comfortable with.
+                Điền username của bạn (không chứa ký tự đặc biệt).
               </FormDescription>
               <div className="relative grid gap-1">
                 <div className="absolute left-0 top-0 grid h-10 w-8 place-items-center">
                   <span className="text-sm text-zinc-400">u/</span>
                 </div>
                 <FormControl>
-                  <Input {...field} placeholder="username" className="pl-6" />
+                  <Input {...field} placeholder="c/username" className="pl-6" />
                 </FormControl>
               </div>
             </FormItem>

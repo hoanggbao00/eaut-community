@@ -21,7 +21,10 @@ export async function PUT(req: Request) {
 		// check if username is taken
 		const isTaken = await prisma.user.findFirst({
 			where: {
-				username: username,
+				AND: [
+					{username: username},
+					{id: { not: session.user.id }}
+				]
 			},
 		});
 

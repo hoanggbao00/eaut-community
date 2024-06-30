@@ -57,7 +57,7 @@ const PostComment: FC<PostCommentProps> = ({
     }
     try {
       setLoading(true);
-      const text = content.replace(/\r?\n/g, '<br />');
+      const text = content.trim().replace(/\r?\n/g, '<br />');
       const payload: CommentRequest = { postId, content: text, replyToId };
 
       await axios.post(
