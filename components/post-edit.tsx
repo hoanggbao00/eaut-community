@@ -109,7 +109,7 @@ const PostEdit: React.FC<PostEditProps> = ({
 
   return (
     <>
-      <Card className="rounded-md bg-gray-200">
+      <Card className="rounded-md">
         <CardContent className="p-3 pt-4">
           <TextareaAutoSize
             placeholder="Title"

@@ -31,10 +31,10 @@ const UserMore = () => {
           <UserRoundX className="mr-2" />
           Chặn tài khoản
         </DropdownMenuItem>
-        <DropdownMenuItem className="text-red-500" onClick={handleClick}>
+        {/* <DropdownMenuItem className="text-red-500" onClick={handleClick}>
           <Flag className="mr-2" />
           Báo cáo
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

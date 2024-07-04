@@ -65,7 +65,6 @@ const CommentMore: React.FC<CommentMoreProps> = ({
             <Ellipsis className="h-5 w-6 text-gray-500 hover:text-foreground" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="" align="end">
-            <DropdownMenuItem className="text-red-500">Báo cáo</DropdownMenuItem>
             {session.user.id === commentAuthor && (
               <>
                 <AlertDialogTrigger asChild>
