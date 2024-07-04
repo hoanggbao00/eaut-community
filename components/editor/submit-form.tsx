@@ -63,7 +63,6 @@ export const SubmitForm: React.FC<SubmitFormProps> = ({ communities }) => {
         
         startTransition(() => {
           window.localStorage.removeItem("novel-content");
-          revalidatePath(`/c/${communityName}`)
           router.push(`/c/${communityName}`)
         })
       }

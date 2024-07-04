@@ -48,6 +48,8 @@ const Post: FC<PostProps> = ({
     isModerator === true ||
     session?.user.role === "ADMIN";
 
+  console.log(post.title, post.attachment);
+
   return (
     <div className="overflow-hidden rounded-md border border-muted bg-background text-foreground">
       <div className="flex flex-col justify-between px-3 py-2">
@@ -120,30 +122,35 @@ const Post: FC<PostProps> = ({
 
           {/* content */}
           {post.content && (
-            <div
-              className="relative max-h-44 w-full overflow-clip pb-2 text-sm"
-              ref={pRef}
-            >
-              <EditorOutput content={post.content} />
-              {pRef.current?.clientHeight === 150 ? (
-                // blur bottom if content is too long
-                <a href={`/c/${communityName.toLowerCase()}/post/${post.id}`} className="absolute bottom-0 left-0 grid h-24 w-full place-items-end bg-gradient-to-t from-background to-transparent">
-                  <span className="display-block mx-auto font-light text-muted-foreground">
-                  Xem thêm
-                  </span>
-                </a>
-              ) : null}
+            <div className="w-full pb-2 text-sm">
+              <div className="relative max-h-44 overflow-clip" ref={pRef}>
+                <EditorOutput content={post.content} />
+                {pRef.current?.clientHeight &&
+                pRef.current.clientHeight >= 150 ? (
+                  // blur bottom if content is too long
+                  <a
+                    href={`/c/${communityName.toLowerCase()}/post/${post.id}`}
+                    className="absolute bottom-0 left-0 grid h-24 w-full place-items-end bg-gradient-to-t from-background to-transparent"
+                  >
+                    <span className="display-block mx-auto font-light text-muted-foreground">
+                      Xem thêm
+                    </span>
+                  </a>
+                ) : null}
+              </div>
             </div>
           )}
           {post.attachment &&
             (checkYoutubeUrl(post.attachment) ? (
               <YoutubeEmbed src={post.attachment} />
             ) : (
+              <a href={`/c/${communityName.toLowerCase()}/post/${post.id}`}>
                 <img
                   src={post.attachment}
                   alt="post attachment"
-                  className="rounded-md w-full max-h-[500px] object-contain"
+                  className="max-h-[500px] w-full rounded-md object-contain"
                 />
+              </a>
             ))}
         </article>
       </div>

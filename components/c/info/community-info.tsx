@@ -124,11 +124,11 @@ const CommunityInfo: React.FC<CommunityInfoProps> = ({
                   </dd>
                 </div>
               )}
-              {creator?.id === userId && (
+              {userId && creator?.id === userId ? (
                 <p className="pt-1 text-center text-lg">
                   Bạn là người khởi tạo cộng đồng này
                 </p>
-              )}
+              ) : null}
             </dl>
           </CardHeader>
           <Separator className="mt-3" />

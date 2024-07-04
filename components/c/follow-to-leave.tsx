@@ -68,7 +68,7 @@ const FollowToLeave = ({
 			disabled={isLoading}
 		>
 			{isLoading && <Loader2 className='h-4 w-4 mr-2 animate-spin' />}{' '}
-			{followed ? 'Leave' : 'Follow'}
+			{followed ? 'Rời cộng đồng' : 'Tham gia'}
 		</Button>
 	);
 };
