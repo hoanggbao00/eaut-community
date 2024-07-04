@@ -49,8 +49,8 @@ const CommunitySelect: React.FC<props> = ({
             <FormControl>
               <Select
                 onValueChange={(e) => {
-                  getCommunityData(e);
                   field.onChange(e);
+                  getCommunityData(e);
                 }}
               >
                 <SelectTrigger>
