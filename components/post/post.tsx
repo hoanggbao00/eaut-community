@@ -168,7 +168,7 @@ const Post: FC<PostProps> = ({
         >
           <MessageSquare className="h-4 w-4" /> {commentCount} Thảo luận
         </Link>
-        <ShareDropdown url={`/c/${communityName.toLowerCase()}/post/${post.id}`}/>
+        <ShareDropdown url={`${window.location.href}/c/${communityName.toLowerCase()}/post/${post.id}`}/>
       </div>
     </div>
   );
