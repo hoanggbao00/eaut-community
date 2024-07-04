@@ -11,12 +11,15 @@ import {
 } from "./ui/dropdown-menu";
 
 const ShareDropdown = ({
+  url,
   facebook = true,
   className,
 }: {
+  url?: string
   facebook?: boolean;
   className?: string;
 }) => {
+  let href = url ? url : window.location.href
 
   return (
     <DropdownMenu>
@@ -27,7 +30,7 @@ const ShareDropdown = ({
         <DropdownMenuLabel>Chia sẻ</DropdownMenuLabel>
         <DropdownMenuItem>
           <a
-            href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}//&src=sdkpreparse`}
+            href={`https://www.facebook.com/sharer/sharer.php?u=${href}//&src=sdkpreparse`}
             target="_blank"
             className={twMerge(
               "flex items-center justify-center gap-2",
