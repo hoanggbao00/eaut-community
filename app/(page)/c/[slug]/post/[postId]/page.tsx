@@ -10,7 +10,6 @@ import { ShowAvatar } from "@/components/shared/show-avatar";
 import { getAuthSession } from "@/lib/auth";
 import prisma from "@/lib/db/prisma";
 import { checkYoutubeUrl, formatTimeToNow } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -18,6 +17,8 @@ import Image from "next/image";
 import Link from "next/link";
 import YoutubeEmbed from "@/components/youtube-embed";
 import ReceiveNotification from "@/components/post/receive-notification";
+import ShareDropdown from "@/components/ShareDropdown";
+import { Loader2 } from "lucide-react";
 
 interface CommunityPostPageProps {
   params: {
@@ -46,6 +47,14 @@ export async function generateMetadata({
 
   return {
     title: res.title,
+    description: res.title,
+    openGraph: {
+      title: res.title,
+      description: res.title,
+      images: res.attachment
+        ? res.attachment
+        : "https://firebasestorage.googleapis.com/v0/b/doantotnghiep-eaut.appspot.com/o/meme3.jpg?alt=media&token=92595713-6fd1-4860-ad3a-23634f4e32dd",
+    },
   };
 }
 
@@ -144,6 +153,8 @@ const CommunityPostPage = async ({
               <h1 className="py-2 text-2xl font-semibold leading-6 text-primary">
                 {post?.title}
               </h1>
+              {post?.content && <EditorOutput content={post?.content} />}
+
               {post.attachment &&
                 (checkYoutubeUrl(post.attachment) ? (
                   <div className="py-1">
@@ -159,7 +170,6 @@ const CommunityPostPage = async ({
                     />
                   </div>
                 ))}
-              {post?.content && <EditorOutput content={post?.content} />}
             </>
           ) : (
             <PostEdit
@@ -173,8 +183,8 @@ const CommunityPostPage = async ({
         </div>
         {!isEdit && (
           <div>
-            <Suspense fallback={<VoteSkeleton />}>
-              <div className="mt-2 w-fit">
+            <div className="flex items-center gap-2">
+              <Suspense fallback={<VoteSkeleton />}>
                 <PostVoteServer
                   postId={post?.id}
                   getData={async () => {
@@ -188,8 +198,9 @@ const CommunityPostPage = async ({
                     });
                   }}
                 />
-              </div>
-            </Suspense>
+              </Suspense>
+              <ShareDropdown />
+            </div>
             <Suspense
               fallback={
                 <span>

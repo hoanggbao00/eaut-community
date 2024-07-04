@@ -1,8 +1,7 @@
 "use client";
-
 import { checkYoutubeUrl, formatTimeToNow } from "@/lib/utils";
 import { PostVote } from "@prisma/client";
-import { MessageSquare } from "lucide-react";
+import { Facebook, Forward, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { FC, useRef } from "react";
 import EditorOutput from "../editor/editor-output";
@@ -12,8 +11,8 @@ import { ShowAvatar } from "../shared/show-avatar";
 import { ExtendedPost } from "@/types/db";
 import PostMore from "./post-more";
 import { Session } from "next-auth";
-import Image from "next/image";
 import YoutubeEmbed from "../youtube-embed";
+import ShareDropdown from "../ShareDropdown";
 
 type PartialVote = Pick<PostVote, "type">;
 
@@ -47,8 +46,6 @@ const Post: FC<PostProps> = ({
     session?.user.id === post.authorId ||
     isModerator === true ||
     session?.user.role === "ADMIN";
-
-  console.log(post.title, post.attachment);
 
   return (
     <div className="overflow-hidden rounded-md border border-muted bg-background text-foreground">
@@ -171,6 +168,7 @@ const Post: FC<PostProps> = ({
         >
           <MessageSquare className="h-4 w-4" /> {commentCount} Thảo luận
         </Link>
+        <ShareDropdown />
       </div>
     </div>
   );
