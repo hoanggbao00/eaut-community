@@ -1,9 +1,9 @@
 "use client";
 import { checkYoutubeUrl, formatTimeToNow } from "@/lib/utils";
 import { PostVote } from "@prisma/client";
-import { Facebook, Forward, MessageSquare } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import Link from "next/link";
-import { FC, useRef } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import EditorOutput from "../editor/editor-output";
 import PostVoteClient from "./vote/post-vote-client";
 import { buttonVariants } from "../ui/button";
@@ -37,7 +37,8 @@ const Post: FC<PostProps> = ({
   showCommunityName,
   isModerator,
 }) => {
-  const pRef = useRef<HTMLParagraphElement>(null);
+  const pRef = useRef<HTMLDivElement>(null);
+  const [render, setRender] = useState('second') // add state for show useRef at div
   const author = post.author
     ? post.author
     : { username: "User removed", image: "" };
@@ -46,6 +47,14 @@ const Post: FC<PostProps> = ({
     session?.user.id === post.authorId ||
     isModerator === true ||
     session?.user.role === "ADMIN";
+
+  useEffect(() => {
+    const timeOutFn = setTimeout(() => {
+      setRender('sc')
+    }, 10);
+
+    return () => clearTimeout(timeOutFn)
+  }, []);
 
   return (
     <div className="overflow-hidden rounded-md border border-muted bg-background text-foreground">
@@ -122,8 +131,7 @@ const Post: FC<PostProps> = ({
             <div className="w-full pb-2 text-sm">
               <div className="relative max-h-44 overflow-clip" ref={pRef}>
                 <EditorOutput content={post.content} />
-                {pRef.current?.clientHeight &&
-                pRef.current.clientHeight >= 150 ? (
+                {pRef.current && pRef.current.clientHeight >= 150 && (
                   // blur bottom if content is too long
                   <a
                     href={`/c/${communityName.toLowerCase()}/post/${post.id}`}
@@ -133,7 +141,7 @@ const Post: FC<PostProps> = ({
                       Xem thêm
                     </span>
                   </a>
-                ) : null}
+                )}
               </div>
             </div>
           )}
@@ -168,7 +176,9 @@ const Post: FC<PostProps> = ({
         >
           <MessageSquare className="h-4 w-4" /> {commentCount} Thảo luận
         </Link>
-        <ShareDropdown url={`${window.location.href}/c/${communityName.toLowerCase()}/post/${post.id}`}/>
+        <ShareDropdown
+          url={`${window.location.href}/c/${communityName.toLowerCase()}/post/${post.id}`}
+        />
       </div>
     </div>
   );
