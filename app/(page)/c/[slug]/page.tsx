@@ -147,7 +147,7 @@ const page = async ({ params, searchParams }: CommunityPageProps) => {
       />
       <div className="lg:flex lg:gap-3">
         <Tabs defaultValue={!tab ? "feed" : tab} className="lg:flex-1">
-          <TabsList>
+          <TabsList className="max-w-[100dvw] md:max-w-[none] overflow-x-auto">
             <TriggerList isPermission={isPermission} />
           </TabsList>
           <Separator className="my-1" />

@@ -24,8 +24,8 @@ const CommunityHeader: React.FC<CommunityHeaderProps> = ({
   isModerator,
 }) => {
   return (
-    <div className="h-80 md:relative md:h-52">
-      <div className="relative h-1/2">
+    <div className="md:relative">
+      <div className="relative h-72">
         <Image
           alt="cover"
           fill
@@ -33,8 +33,8 @@ const CommunityHeader: React.FC<CommunityHeaderProps> = ({
           className="rounded-lg object-cover"
         />
       </div>
-      <div className="mt-2 flex flex-wrap items-center gap-2">
-        <div className="rounded-full bg-background p-2 shadow-lg md:absolute md:left-3 md:top-[35%]">
+      <div className="mt-2 flex flex-wrap items-center gap-2 pb-8">
+        <div className="rounded-full bg-background p-2 shadow-lg md:absolute md:left-3 md:bottom-[5%]">
           <ShowAvatar
             className="h-12 w-12 md:h-20 md:w-20"
             data={{

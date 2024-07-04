@@ -45,7 +45,11 @@ const PostMore = ({
         description: "Your post has been deleted.",
       });
       startTransition(() => {
-        router.push(`/c/${communityName}`);
+        if (window.location.href.includes(communityName)) {
+          router.push(`/c/${communityName}`);
+        } else {
+          location.reload();
+        }
         router.refresh();
       });
     } catch (error) {
@@ -68,9 +72,7 @@ const PostMore = ({
             {permission && (
               <>
                 <AlertDialogTrigger asChild>
-                  <DropdownMenuItem key="delete-action">
-                    Xóa
-                  </DropdownMenuItem>
+                  <DropdownMenuItem key="delete-action">Xóa</DropdownMenuItem>
                 </AlertDialogTrigger>
                 <DropdownMenuItem asChild>
                   <Link href={`/c/${communityName}/post/${postId}?edit=true`}>
@@ -85,8 +87,9 @@ const PostMore = ({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete</AlertDialogTitle>
             <AlertDialogDescription>
-              Bạn có chắc chắn 
-              <span className="font-semibold text-red-500">Xóa</span> bài viết này không? Hành động này sẽ không được khôi phục.
+              Bạn có chắc chắn
+              <span className="font-semibold text-red-500">Xóa</span> bài viết
+              này không? Hành động này sẽ không được khôi phục.
             </AlertDialogDescription>
           </AlertDialogHeader>
 
