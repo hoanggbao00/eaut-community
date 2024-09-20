@@ -45,7 +45,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
         <p>{text}</p>
         {status === false && (
           <Badge className="bg-yellow-200 text-yellow-900 hover:bg-yellow-300/80">
-            Pending Reviews
+            Chờ duyệt
           </Badge>
         )}
       </div>

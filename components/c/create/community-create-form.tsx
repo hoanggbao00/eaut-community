@@ -117,7 +117,7 @@ const CreateForm = ({
 
       toast({
         title: `Yêu cầu ${
-          community ? "cập nhật" : "chỉnh sửa"
+          community ? "cập nhật" : "tạo mới"
         } ${name} đã được gửi tới quản trị!`,
         variant: "success",
       });

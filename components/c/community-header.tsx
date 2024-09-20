@@ -48,7 +48,7 @@ const CommunityHeader: React.FC<CommunityHeaderProps> = ({
             {community.name}
             {community.isAccessible === false ? (
               <Badge className="bg-yellow-200 text-yellow-900 hover:bg-yellow-300/80">
-                Pending Reviews
+                Chờ duyệt
               </Badge>
             ) : (
               <Badge className="bg-green-200 text-green-900 hover:bg-green-300 hover:text-green-900">
