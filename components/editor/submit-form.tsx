@@ -37,6 +37,7 @@ interface SubmitFormProps {
 
 export const SubmitForm: React.FC<SubmitFormProps> = ({ communities }) => {
   const [isLoading, setLoading] = useState(false);
+  const [isCommunityLoading, setCommunityLoading] = useState(false)
   const [communityName, setCommunityName] = useState("");
   const [attachment, setAttachment] = useState<File>();
   const [preview, setPreview] = useState("");
@@ -54,17 +55,21 @@ export const SubmitForm: React.FC<SubmitFormProps> = ({ communities }) => {
   });
 
   const createPost = async (payload: CreatePostPayload) => {
+    if(isCommunityLoading) return toast({
+      title: "Vui lòng đợi tải thông tin cộng đồng",
+      variant: "warning",
+    })
     try {
       const data = await axios.post("/api/community/post/create", payload);
       if (data) {
         toast({
           description: "Your post has been published.",
         });
-        
+
         startTransition(() => {
           window.localStorage.removeItem("novel-content");
-          router.push(`/c/${communityName}`)
-        })
+          router.push(`/c/${communityName}`);
+        });
       }
     } catch (error) {
       return toast({
@@ -186,6 +191,7 @@ export const SubmitForm: React.FC<SubmitFormProps> = ({ communities }) => {
               form={form.control}
               communities={communities}
               setCommunityName={setCommunityName}
+              setCommunityLoading={setCommunityLoading}
             />
           </div>
           <Button

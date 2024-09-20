@@ -111,6 +111,8 @@ export async function PUT(req: NextRequest) {
         categoryId: community.categoryId,
         categoryName: community.category?.title,
         rules: community.rules,
+        cover: community.cover,
+        image: community.image
       };
 
       const { newContent } = request;

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   FormField,
@@ -24,19 +24,24 @@ interface props {
   communities: {
     community: Pick<Community, "id" | "name">;
   }[];
-  setCommunityName: (value: string) => void 
+  setCommunityName: (value: string) => void;
+  setCommunityLoading: (value: boolean) => void;
 }
 
 const CommunitySelect: React.FC<props> = ({
   form,
   communities,
-  setCommunityName
+  setCommunityName,
+  setCommunityLoading,
 }) => {
   const getCommunityData = async (e: string) => {
+    setCommunityLoading(true);
     try {
       const { data } = await axios.get(`/api/community?communityId=${e}`);
     } catch (error) {
       console.log(error);
+    } finally {
+      setCommunityLoading(false);
     }
   };
 
@@ -50,8 +55,8 @@ const CommunitySelect: React.FC<props> = ({
             <FormControl>
               <Select
                 onValueChange={(e) => {
-                  const cName = communities.find(c => c.community.id === e)
-                  setCommunityName(cName!.community.name)
+                  const cName = communities.find((c) => c.community.id === e);
+                  setCommunityName(cName!.community.name);
                   field.onChange(e);
                   getCommunityData(e);
                 }}
